@@ -1,0 +1,11 @@
+name: project6
+title: Project6
+account: andrewchou
+server: shinyapps.io
+appId: 174965
+bundleId: 802087
+url: https://andrewchou.shinyapps.io/project6/
+when: 1493068865.77126
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: www/SuperStoreOrders.csv
