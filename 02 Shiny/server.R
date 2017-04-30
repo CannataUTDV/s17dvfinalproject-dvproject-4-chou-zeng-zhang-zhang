@@ -66,11 +66,17 @@ shinyServer(function(input, output) {
   
   # Create dataframe for the Scatterplot Tab
   df3 <- eventReactive(input$click3, {
-    tdf = query(
-      data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-6", type="sql",
-      query="SELECT rank,workers FROM inc5000_2016_clean order by rank limit 100"
-    )})  
+    tdf = df_scatter <- query(
+      data.world(propsfile="www/.data.world"),
+      dataset="achou/s-17-dv-final-project", type="sql",
+      query="
+      select AreaName as State, gini_index, ap_cs_2013_states_clean.attempt_rate_black, ap_cs_2013_states_clean.attempt_rate_hispanic
+      from `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
+      left join `ap_cs_2013_states_clean.csv/ap_cs_2013_states_clean`
+      where `acs-2015-5-e-income-queried`.AreaName = `ap_cs_2013_states_clean`.state
+      "
+    ) %>% data.frame(.)
+    })  
   
   # Create dataframe for Crosstab KPI Parameters Tab
   df4 <- eventReactive(input$click4, {
@@ -209,12 +215,16 @@ shinyServer(function(input, output) {
   })
   
   #----------------Begin Scatter Plot Visualization------------
-  output$scatterPlot1 <- renderPlotly({
-    p <- ggplot(df3()) + 
-    geom_point(aes(x=rank, y=workers, colour=rank), size=2) +
-    theme(axis.text.x=element_text(angle=90, size=16, vjust=0.5)) + 
-    theme(axis.text.y=element_text(size=16, hjust=0.5)) 
-  ggplotly(p)
+  output$scatterPlot1 <- renderPlot({
+    plot_scatter <- ggplot(df3()) +
+      geom_point(aes(x = gini_index, y = attempt_rate_black, colour="Black"))+
+      geom_smooth(aes(x = gini_index, y = attempt_rate_black, colour = "Black"), method = "loess", se = F) +
+      geom_point(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"))+
+      geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
+      labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Race") +
+      scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
+      theme_classic()
+    print(plot_scatter)
   })
   
   #----------------Begin Crosstab KPI Parameters Visualization- 

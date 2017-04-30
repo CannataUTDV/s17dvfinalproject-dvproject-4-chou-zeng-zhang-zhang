@@ -63,13 +63,13 @@ dashboardPage(skin= "purple",
               tabsetPanel(
                 tabPanel("Data",  
                          #uiOutput("scatterStates"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html,
-                         tags$h3(tags$b("Add a Title")),
-                         tags$h5("Provide instructions on what to do with the button:"),
+                         tags$h3(tags$b("Test Attempt Ratio vs. Equality for Blacks and Hispanics")),
+                         tags$h5("Click the button below to get Ginis index and test attempy ratio for Blacks and Hispanics"),
                          actionButton(inputId = "click3",  label = "To get data, click here"),
                          hr(), # Add space after button.
                          DT::dataTableOutput("scatterData1")
                 ),
-                tabPanel("Simple Scatter Plot", plotlyOutput("scatterPlot1", height=1000))
+                tabPanel("Simple Scatter Plot", plotOutput("scatterPlot1", height=700))
               )
       ),
       #------------------------------------------Begin Crosstabs KPI Parameters --------------------------------------------
