@@ -241,7 +241,7 @@ shinyServer(function(input, output) {
   #----------------Begin Barchart Visualization---------------
   
   
-  #----------------Begin Barchart Visualization---------------
+  #----------------Begin Map Visualization---------------
   output$choroMap1 <- renderPlot({
   df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
   colnames(df_choroMap) <- c("region", "value")
