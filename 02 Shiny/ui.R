@@ -6,7 +6,7 @@ require(leaflet)
 require(plotly)
 
 dashboardPage(skin= "purple",
-  dashboardHeader(title=tags$b("Project ")),
+  dashboardHeader(title=tags$b("Final Project")),
   
   dashboardSidebar(
     sidebarMenu(
