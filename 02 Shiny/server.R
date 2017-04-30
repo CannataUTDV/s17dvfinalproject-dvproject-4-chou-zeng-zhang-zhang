@@ -16,6 +16,7 @@ require(acs)
 require(choroplethr)
 require(choroplethrAdmin1)
 require(choroplethrMaps)
+require (reshape2)
 
 # This is a global dataframe for the histogram plot
 df_hist <- query(
@@ -35,7 +36,6 @@ shinyServer(function(input, output) {
   # These widgets are for the Crosstabs tab.
   KPI_Low = reactive({input$KPI1})     
   KPI_Medium = reactive({input$KPI2})
-  KPI_High = reactive({input$KPI3})
   
   # Create dataframe for the BoxPlot Tab
   df1 <- eventReactive(input$click1, {
@@ -80,62 +80,54 @@ shinyServer(function(input, output) {
   df4 <- eventReactive(input$click4, {
     query(
       data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-5", type="sql",
-      query="
-      select inc5000_2016_clean.state_l as `State`, 
-      inc5000_2016_clean.yrs_on_list as `Years`,
-      sum(inc5000_2016_clean.growth) / 100 as `KPI_Growth`,
+      dataset="achou/s-17-dv-final-project", type="sql",
+      query="SELECT StateScoreCounts.SCORE as Score,`acs-2015-5-e-income-queried`.AreaName as State, StateScoreCounts.COUNT as Count,
+avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita, 
       case
-      when sum(inc5000_2016_clean.growth) / 100 < ? then '03 Low'
-      when sum(inc5000_2016_clean.growth) / 100 < ? then '02 Medium'
+      when avg(`acs-2015-5-e-income-queried`.per_capita_income) < ? then '03 Low'
+      when avg(`acs-2015-5-e-income-queried`.per_capita_income) < ? then '02 Medium'
       else '01 High'
-      end AS `kpi`
-      from inc5000_2016_clean
-      inner join income_census
-      on inc5000_2016_clean.state_s = income_census.State
-      group by inc5000_2016_clean.state_s, yrs_on_list
-      order by inc5000_2016_clean.state_s, yrs_on_list",
-      queryParameters = list (KPI_Low(),KPI_Medium(),KPI_High())
-    )  %>% data.frame() 
+      end AS kpi
+      FROM StateScoreCounts LEFT OUTER JOIN `acs-2015-5-e-income-queried`
+      ON StateScoreCounts.STATE = `acs-2015-5-e-income-queried`.AreaName
+      GROUP BY StateScoreCounts.SCORE,`acs-2015-5-e-income-queried`.AreaName, StateScoreCounts.COUNT
+      ORDER BY StateScoreCounts.SCORE,`acs-2015-5-e-income-queried`.AreaName, StateScoreCounts.COUNT
+      ",
+      queryParameters = list (KPI_Low(),KPI_Medium())
+    )  %>% data.frame()
   })
   
   # Create dataframe for Barchart Visualization 1
   df5 <- eventReactive(input$click5, {
-      tdf = query(
+    tdf5 = query(
         data.world(propsfile = "www/.data.world"),
-        dataset="jadyzeng/s-17-dv-project-6", type="sql",
-        query="SELECT inc5000_2016_clean.industry AS Industry, 
-              income_census.State as State, 
-              AVG(inc5000_2016_clean.growth) AS AVG_Growth
-              From inc5000_2016_clean 
-              left outer join income_census
-              on inc5000_2016_clean.state_s = income_census.State
-              where income_census.State in ('CA','FL','GA','NY','TX')
-              AND ((inc5000_2016_clean.industry in ('Construction','Financial Services', 'Health','Human Resources', 'IT Services'))
-              OR (inc5000_2016_clean.industry LIKE '%Business Products%'))
-              GROUP BY income_census.State,inc5000_2016_clean.industry
-              ORDER BY inc5000_2016_clean.industry, income_census.State;"
-      ) 
-      tdf2 = tdf %>% group_by(Industry) %>% summarize(window_avg_growth = mean(AVG_Growth))
-      dplyr::inner_join(tdf, tdf2, by = "Industry")
+        dataset="achou/s-17-dv-final-project", type="sql",
+        query="SELECT ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
+       ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
+        ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking,
+        ap_cs_2013_states_clean.state
+        From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
+        on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
+        WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000
+        "
+      ) %>% data.frame(.)
+    
     })
   
-  df6 <- eventReactive(input$click5, {
-      tdf6 = query(
-      data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-6", type="sql",
-      query = "SELECT inc5000_2016_clean.yrs_on_list, 
-            income_census.State as State, 
-            AVG(inc5000_2016_clean.revenue) AS AVG_Revenue
-            FROM inc5000_2016_clean LEFT OUTER JOIN income_census
-            ON inc5000_2016_clean.state_s = State
-            WHERE State in ('CA','FL','GA','NY','TX')
-            Group by yrs_on_list, income_census.State"
-
-    )
-    tdf7 = tdf6 %>% group_by(State) %>% summarize(window_avg_revenue = mean(AVG_Revenue))
-    dplyr::inner_join(tdf6, tdf7, by = "State")
-  })
+  tdf6 <- query(
+    data.world(propsfile = "www/.data.world"),
+    dataset="achou/s-17-dv-final-project", type="sql",
+    query="SELECT ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
+                  ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
+                  ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking,
+                  ap_cs_2013_states_clean.state AS State
+          From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
+          on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
+          WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000"
+    ) %>% data.frame(.)
+            
+  df6 <- melt(tdf6)
+  
 
   # Create dataframe for Choropleth Map
   df7 <- eventReactive(input$click6,{
@@ -168,7 +160,7 @@ shinyServer(function(input, output) {
   output$barchartData1 <- renderDataTable({DT::datatable(df5(), rownames = FALSE,
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
-  output$barchartData2 <- renderDataTable({DT::datatable(df6(), rownames = FALSE,
+  output$barchartData2 <- renderDataTable({DT::datatable(df6, rownames = FALSE,
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   output$choroData1 <- renderDataTable({DT::datatable(df7(), rownames = FALSE,
@@ -232,16 +224,24 @@ shinyServer(function(input, output) {
       theme_light()+
       theme(axis.text.x=element_text(size=10, vjust=0.5), axis.title.x=element_text(size=13)) + 
       theme(axis.text.y=element_text(size=10, hjust=0.5), axis.title.y=element_text(size=13)) +
-      geom_text(aes(x=Years, y=State, label=sprintf("%0.2f", round(KPI_Growth, digits = 2))), size=4) +
-      geom_tile(aes(x=Years, y=State, fill=kpi), alpha=0.50, color = "gray") + 
+      geom_text(aes(x=Score, y=State, label=Count), size=4) +
+      geom_tile(aes(x=Score, y=State, fill=kpi), alpha=0.50, color = "gray") + 
       scale_x_continuous(breaks=seq(1, 13, 1)) +
-      labs(fill = "Level of Growth", x = "Years on Inc. 5000 List")
+      labs(fill = "Level of Growth", x = "Per Capita")
   })
   
   #----------------Begin Barchart Visualization---------------
+  output$barchartPlot1 <- renderPlot({ggplot(df6, aes(State, value, fill = variable)) +
+      scale_y_continuous(labels = scales::comma) + # no scientific notation
+      theme(axis.text.x=element_text(angle=0, size=12, vjust=0.5)) + 
+      theme(axis.text.y=element_text(size=12, hjust=0.5)) +
+      geom_bar(stat= 'identity',position = 'dodge') + 
+      
+      coord_flip() +
+      geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)),position = position_dodge(width = 1),colour="black", hjust=-.5) 
+  })
   
-  
-  #----------------Begin Map Visualization---------------
+  #----------------Begin Barchart Visualization---------------
   output$choroMap1 <- renderPlot({
   df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
   colnames(df_choroMap) <- c("region", "value")
