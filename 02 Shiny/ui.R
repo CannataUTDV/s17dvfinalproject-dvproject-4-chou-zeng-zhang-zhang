@@ -14,7 +14,8 @@ dashboardPage(skin= "purple",
       menuItem("Histograms", tabName = "histogram", icon = icon("dashboard")),
       menuItem("Scatter Plots", tabName = "scatter", icon = icon("dashboard")),
       menuItem("Crosstabs, KPIs, Parameters", tabName = "crosstab", icon = icon("dashboard")),
-      menuItem("Barchart Table Calculations", tabName = "barchart", icon = icon("dashboard"))
+      menuItem("Barchart Table Calculations", tabName = "barchart", icon = icon("dashboard")),
+      menuItem("Choropleth Map", tabName = "choropleth", icon = icon("dashboard"))
       )
     ),
   
@@ -26,8 +27,7 @@ dashboardPage(skin= "purple",
                  tabPanel("Data",  
                           #uiOutput("boxplotRegions"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html,
                           tags$h3(tags$b("Add a Title")),
-                          tags$h6("Provide instructions on what to do with the button:"),
-                          hr(), # Add space after button.
+                          tags$h5("Provide instructions on what to do with the button:"),
                           actionButton(inputId = "click1",  label = "To get data, click here"),
                           hr(), 
                           DT::dataTableOutput("boxplotData1")
@@ -49,14 +49,13 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "histogram",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Add a Title")),
-                         tags$h6("Provide instructions on what to do with the button:"),
-                         hr(),
+                         tags$h3(tags$b("Score Distribution for Coastal and Landlocked States")),
+                         tags$h5("Please click the button below to see the detailed score records for each state"),
                          actionButton(inputId = "click2",  label = "To get data, click here"),
                          hr(), # Add space after button.
                          DT::dataTableOutput("histogramData1")
                 ),
-                tabPanel("Simple Histogram", plotOutput("histogramPlot1", height=1000))
+                tabPanel("Simple Histogram", plotOutput("histogramPlot1", height=700))
               )
       ),
       #------------------------------------------Begin Scatter Plot tab content----------------------------------------------
@@ -65,8 +64,7 @@ dashboardPage(skin= "purple",
                 tabPanel("Data",  
                          #uiOutput("scatterStates"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html,
                          tags$h3(tags$b("Add a Title")),
-                         tags$h6("Provide instructions on what to do with the button:"),
-                         hr(),
+                         tags$h5("Provide instructions on what to do with the button:"),
                          actionButton(inputId = "click3",  label = "To get data, click here"),
                          hr(), # Add space after button.
                          DT::dataTableOutput("scatterData1")
@@ -79,8 +77,7 @@ dashboardPage(skin= "purple",
               tabsetPanel(
                 tabPanel("Data",
                          tags$h3(tags$b("KPI: Growth (Percent)")),
-                         tags$h6("Adjust the intervals for the KPI levels using the sliders:"),
-                         hr(),
+                         tags$h5("Adjust the intervals for the KPI levels using the sliders:"),
                          sliderInput("KPI1", "Low:", min = 0, max = 10,  value = 10),
                          sliderInput("KPI2", "Medium:", min = 11, max = 50,  value = 50),
                          sliderInput("KPI3", "High:", min = 51, max = 200, value = 200),
@@ -103,8 +100,7 @@ dashboardPage(skin= "purple",
                 tabPanel("Data",  
                          #uiOutput("regions2"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html
                          tags$h3(tags$b("Add a Title")),
-                         tags$h6("Provide instructions on what to do with the button:"),
-                         hr(), # Add space after button.
+                         tags$h5("Provide instructions on what to do with the button:"),
                          actionButton(inputId = "click5",  label = "To get data, click here"),
                          hr(),
                          'Here is data for the "Barchart with Table Calculation" tab',
@@ -119,11 +115,23 @@ dashboardPage(skin= "purple",
                          hr(),
                          DT::dataTableOutput("barchartData3")),
                 tabPanel("Barchart with Table Calculation", "*Add description for each colored line", plotOutput("barchartPlot1", height=1500)),
-                tabPanel("High Discount Orders", leafletOutput("barchartMap1"), height=900 ),
                 tabPanel("High Sales Customers", plotlyOutput("barchartPlot2", height=700) )
+              )),
+      # End Barchart tab content.
+      #------------------------------------------Begin Choropleth tab content-----------------------------------------------
+      # Begin Choropleth tab content.
+      tabItem(tabName = "choropleth",
+              tabsetPanel(
+                tabPanel("Data",  
+                         tags$h3(tags$b("Income Inequality in the U.S.")),
+                         tags$h5("Click the button below to get the Gini index for each state in the U.S."),
+                         actionButton(inputId = "click6",  label = "To get data, click here"),
+                         hr(),
+                         DT::dataTableOutput("choroData1")),
+                tabPanel("The Map Diagram", plotOutput("choroMap1"), height=900 )
               )
       )
-      # End Barchart tab content.
+      # End Choropleth tab content.
       
     )
   )

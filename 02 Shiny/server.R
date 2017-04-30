@@ -12,7 +12,12 @@ require(lubridate)
 require(grid)
 require(gridExtra)
 require(RColorBrewer)
+require(acs)
+require(choroplethr)
+require(choroplethrAdmin1)
+require(choroplethrMaps)
 
+# This is a global dataframe for the histogram plot
 df_hist <- query(
     data.world(propsfile="www/.data.world"),
     dataset="achou/s-17-dv-final-project", type="sql",
@@ -46,24 +51,10 @@ shinyServer(function(input, output) {
     )})
   
   # Create dataframe for the Histogram Tab
-  # Show this one
-  # df_hist <- eventReactive(input$click2, {
-  #   tdf = query(
-  #   data.world(propsfile="www/.data.world"),
-  #   dataset="achou/s-17-dv-final-project", type="sql",
-  #   query="
-  #   select STATE, SCORE, sum(COUNT)
-  #   from StateScoreCounts
-  #   group by STATE, SCORE
-  #   ORDER by STATE, SCORE"
-  # ) %>% data.frame(.)
-  #   tdf[is.na(tdf)] <- 0
-  #   data.frame(tdf)
-  # })
-  
-  # eventReactive(input$click2, {
-  # df_hist[is.na(df_hist)] <- 0
-  # })
+
+  df2 <- eventReactive(input$click2, {df_hist
+  })
+
   
   df_coastal <-  eventReactive(input$click2, {
   df_hist %>% dplyr::filter(STATE %in% c("Maine", "New Hampshire", "Massachussetts", "Rhode Island", "Connecticut", "New Jersey", "New York", "Delaware", "Maryland", "Virginia", "North Carolina","South Carolina", "Georgia","Florida", "Oregon", "Washington", "Alaska", "Hawaii", "California", "Florida", "Alabama", "Mississippi","Louisiana","Texas")) %>% data.frame(.)
@@ -120,7 +111,6 @@ shinyServer(function(input, output) {
               OR (inc5000_2016_clean.industry LIKE '%Business Products%'))
               GROUP BY income_census.State,inc5000_2016_clean.industry
               ORDER BY inc5000_2016_clean.industry, income_census.State;"
-        #queryParameters = state_l
       ) 
       tdf2 = tdf %>% group_by(Industry) %>% summarize(window_avg_growth = mean(AVG_Growth))
       dplyr::inner_join(tdf, tdf2, by = "Industry")
@@ -143,33 +133,15 @@ shinyServer(function(input, output) {
     dplyr::inner_join(tdf6, tdf7, by = "State")
   })
 
-  # Create dataframe for ID Set Visualization ------------------------------------------------------------------
-  
-  df7 <- eventReactive(input$click5, {
-    
-    tdf_a <- query(
-      data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-6", type="sql",
-      query="
-      Select inc5000_2016_clean.id, sum(inc5000_2016_clean.revenue) as SUM_Revenue
-      from inc5000_2016_clean
-      group by inc5000_2016_clean.id
-      having sum(inc5000_2016_clean.revenue) > 1000000000
-      order by inc5000_2016_clean.id"
-      ) %>% data.frame 
-    
-    tdf_b <- query(
-      data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-6", type="sql",
-      query="
-      select id, inc5000_2016_clean.growth AS growth 
-      FROM inc5000_2016_clean 
-      WHERE id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-      order by id",
-      queryParameters = tdf_a$id
-    ) %>% data.frame
-    
+  # Create dataframe for Choropleth Map
+  df7 <- eventReactive(input$click6,{
+      tdf = query(
+        data.world(propsfile="www/.data.world"),
+        dataset="achou/s-17-dv-final-project", type="sql",
+        query="SELECT * FROM `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`"
+      ) %>% data.frame(.)
   })
+
   
   # ------------------------------------Output data tables for each visualization--------------------------
   
@@ -177,7 +149,7 @@ shinyServer(function(input, output) {
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   
-  output$histogramData1 <- renderDataTable({DT::datatable(df_hist, rownames = FALSE,
+  output$histogramData1 <- renderDataTable({DT::datatable(df2(), rownames = FALSE,
                                                           extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   
@@ -195,7 +167,7 @@ shinyServer(function(input, output) {
   output$barchartData2 <- renderDataTable({DT::datatable(df6(), rownames = FALSE,
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
-  output$barchartData3 <- renderDataTable({DT::datatable(df7(), rownames = FALSE,
+  output$choroData1 <- renderDataTable({DT::datatable(df7(), rownames = FALSE,
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   
@@ -257,6 +229,16 @@ shinyServer(function(input, output) {
   })
   
   #----------------Begin Barchart Visualization---------------
+  
+  
+  #----------------Begin Barchart Visualization---------------
+  output$choroMap1 <- renderPlot({
+  df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
+  colnames(df_choroMap) <- c("region", "value")
+  df_choroMap$region <- tolower(df_choroMap$region)
+  plot_map <- state_choropleth(df_choroMap, title="Income Inequality in the U.S.", legend="Gini Index")
+  print(plot_map)
+  })
   
   
   # End Barchart Tab ___________________________________________________________
