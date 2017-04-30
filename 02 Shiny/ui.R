@@ -56,7 +56,7 @@ dashboardPage(skin= "purple",
                          hr(), # Add space after button.
                          DT::dataTableOutput("histogramData1")
                 ),
-                tabPanel("Simple Histogram", plotlyOutput("histogramPlot1", height=1000))
+                tabPanel("Simple Histogram", plotOutput("histogramPlot1", height=1000))
               )
       ),
       #------------------------------------------Begin Scatter Plot tab content----------------------------------------------

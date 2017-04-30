@@ -9,6 +9,22 @@ require(DT)
 require(leaflet)
 require(plotly)
 require(lubridate)
+require(grid)
+require(gridExtra)
+require(RColorBrewer)
+
+df_hist <- query(
+    data.world(propsfile="www/.data.world"),
+    dataset="achou/s-17-dv-final-project", type="sql",
+    query="
+    select STATE, SCORE, sum(COUNT)
+    from StateScoreCounts
+    group by STATE, SCORE
+    ORDER by STATE, SCORE"
+  ) %>% data.frame(.)
+df_hist[is.na(df_hist)] <- 0
+data.frame(df_hist)
+
 
 shinyServer(function(input, output) { 
   # These widgets are for the Crosstabs tab.
@@ -30,17 +46,32 @@ shinyServer(function(input, output) {
     )})
   
   # Create dataframe for the Histogram Tab
-  df2 <- eventReactive(input$click2, {
-    tdf = query(
-      data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-6", type="sql",
-      query="SELECT inc5000_2016_clean.yrs_on_list,inc5000_2016_clean.company
-      FROM inc5000_2016_clean LEFT OUTER JOIN income_census
-      ON inc5000_2016_clean.state_s = State
-      WHERE State in ('CA','FL','GA','NY','TX')
-      Group by yrs_on_list, income_census.State
-      Order by income_census.State, yrs_on_list"
-    )})  
+  # Show this one
+  # df_hist <- eventReactive(input$click2, {
+  #   tdf = query(
+  #   data.world(propsfile="www/.data.world"),
+  #   dataset="achou/s-17-dv-final-project", type="sql",
+  #   query="
+  #   select STATE, SCORE, sum(COUNT)
+  #   from StateScoreCounts
+  #   group by STATE, SCORE
+  #   ORDER by STATE, SCORE"
+  # ) %>% data.frame(.)
+  #   tdf[is.na(tdf)] <- 0
+  #   data.frame(tdf)
+  # })
+  
+  # eventReactive(input$click2, {
+  # df_hist[is.na(df_hist)] <- 0
+  # })
+  
+  df_coastal <-  eventReactive(input$click2, {
+  df_hist %>% dplyr::filter(STATE %in% c("Maine", "New Hampshire", "Massachussetts", "Rhode Island", "Connecticut", "New Jersey", "New York", "Delaware", "Maryland", "Virginia", "North Carolina","South Carolina", "Georgia","Florida", "Oregon", "Washington", "Alaska", "Hawaii", "California", "Florida", "Alabama", "Mississippi","Louisiana","Texas")) %>% data.frame(.)
+  })
+  
+  df_landlock <- eventReactive(input$click2, {
+  df_hist %>% dplyr::filter(STATE %in% c("Arizona", "Arkansas", "Washington DC", "Idaho", "Kentucky","Michigan","Minnesota","Montana","Nevada","New Mexico","North Dakota","Ohio","Oklahoma","Pennsylvania","Tennessee","Vermont","West Virginia")) %>% data.frame(.)
+  })
   
   # Create dataframe for the Scatterplot Tab
   df3 <- eventReactive(input$click3, {
@@ -146,7 +177,7 @@ shinyServer(function(input, output) {
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   
-  output$histogramData1 <- renderDataTable({DT::datatable(df2(), rownames = FALSE,
+  output$histogramData1 <- renderDataTable({DT::datatable(df_hist, rownames = FALSE,
                                                           extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   
@@ -181,11 +212,28 @@ shinyServer(function(input, output) {
   })  
 
   #-----------------Begin Histogram Visualization--------------
-  output$histogramPlot1 <- renderPlotly({
-    p <- ggplot(df2()) +
-      geom_histogram(aes(x=yrs_on_list, colour=company)) +
-      theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))
-    ggplotly(p)
+  output$histogramPlot1 <- renderPlot({
+    plot_hist_coastal <- ggplot(df_coastal())+
+      geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity")+
+      scale_fill_brewer(type="div", palette="RdYlBu") +
+      guides(fill=FALSE) +
+      labs(x = "Test Score", y = "Count", 
+           title="Score Distribution for Coastal States") +
+      theme(title = element_text(size=12, face = "bold"))
+    
+    plot_hist_landlock <- ggplot(df_landlock())+
+      geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity") +
+      scale_fill_brewer(type="div", palette="RdYlBu")+
+      guides(fill=FALSE) +
+      labs(x = "Test Score", y = "Count", 
+           title = "Score Distribution for Landlocked States") +
+      theme(title = element_text(size=12, face = "bold"))
+    
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(3,2)))
+    vplayout <- function(x,y) viewport(layout.pos.row = x, layout.pos.col = y)
+    print(plot_hist_coastal, vp=vplayout(1:3,1))
+    print(plot_hist_landlock, vp=vplayout(1:3,2))
   })
   
   #----------------Begin Scatter Plot Visualization------------

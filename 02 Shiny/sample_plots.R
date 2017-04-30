@@ -7,34 +7,45 @@ require(plotly)
 require(choroplethr)
 require(choroplethrAdmin1)
 require(acs)
-
-df_all <- query(
-  data.world(propsfile="www/.data.world"),
-  dataset="achou/s-17-dv-final-project", type = "sql",
-  query="
-  select *
-  from ap_cs_2013_states_clean
-  order by ap_cs_2013_states_clean.state"
-) %>% data.frame(.)
-
-plot1 <- ggplot(df_all) +
-  geom_line(aes(x=total_takers, y = percent_passed))+
-  geom_point(aes(x = total_takers, y = percent_passed, colour=state)) +
-  guides(colour = FALSE)
-
-#print(plot1)
+require(grid)
+require(gridExtra)
+require(RColorBrewer)
 
 df_hist <- query(
   data.world(propsfile="www/.data.world"),
   dataset="achou/s-17-dv-final-project", type="sql",
   query="
-  select StateScoreCounts.SCORE, sum(StateScoreCounts.COUNT)
+  select STATE, SCORE, sum(COUNT)
   from StateScoreCounts
-  group by StateScoreCounts.SCORE
-  order by StateScoreCounts.SCORE"
+  group by STATE, SCORE
+  ORDER by STATE, SCORE"
 ) %>% data.frame(.)
 
-plot_hist <- ggplot(df_hist)+
-  geom_hist(aes(x=SCORE, y=COUNT), stat="identity")
+df_hist[is.na(df_hist)] <- 0
 
-print(plot_hist)
+df_coastal <- df_hist %>% dplyr::filter(STATE %in% c("Maine", "New Hampshire", "Massachussetts", "Rhode Island", "Connecticut", "New Jersey", "New York", "Delaware", "Maryland", "Virginia", "North Carolina","South Carolina", "Georgia","Florida", "Oregon", "Washington", "Alaska", "Hawaii", "California", "Florida", "Alabama", "Mississippi","Louisiana","Texas")) %>% data.frame(.)
+
+df_landlock <- df_hist %>% dplyr::filter(STATE %in% c("Arizona", "Arkansas", "Washington DC", "Idaho", "Kentucky","Michigan","Minnesota","Montana","Nevada","New Mexico","North Dakota","Ohio","Oklahoma","Pennsylvania","Tennessee","Vermont","West Virginia")) %>% data.frame(.)
+
+
+plot_hist_coastal <- ggplot(df_coastal)+
+  geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity")+
+  scale_fill_brewer(type="div", palette="RdYlBu") +
+  guides(fill=FALSE) +
+  labs(x = "Test Score", y = "Count", 
+       title="Score Distribution for Coastal States") +
+  theme(title = element_text(size=12, face = "bold"))
+
+plot_hist_landlock <- ggplot(df_landlock)+
+  geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity") +
+  scale_fill_brewer(type="div", palette="RdYlBu")+
+  guides(fill=FALSE) +
+  labs(x = "Test Score", y = "Count", 
+       title = "Score Distribution for Landlocked States") +
+  theme(title = element_text(size=12, face = "bold"))
+print(plot_hist_landlock)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(3,2)))
+vplayout <- function(x,y) viewport(layout.pos.row = x, layout.pos.col = y)
+print(plot_hist_coastal, vp=vplayout(1:3,1))
+print(plot_hist_landlock, vp=vplayout(1:3,2))
