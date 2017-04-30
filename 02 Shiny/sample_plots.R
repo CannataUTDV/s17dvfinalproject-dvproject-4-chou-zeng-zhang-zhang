@@ -53,7 +53,7 @@ print(plot_hist_coastal, vp=vplayout(1:3,1))
 print(plot_hist_landlock, vp=vplayout(1:3,2))
 ###
 
-### Choropleth Map
+### Choropleth Maps
 df_census <- query(
   data.world(propsfile="www/.data.world"),
   dataset="achou/s-17-dv-final-project", type="sql",
@@ -63,11 +63,28 @@ df_census <- query(
   "
 ) %>% data.frame(.)
 
-df_choroMap <- subset(df_census, select = c(AreaName, gini_index))
-colnames(df_choroMap) <- c("region", "value")
-df_choroMap$region <- tolower(df_choroMap$region)
-plot_map <- state_choropleth(df_choroMap, title="Income Inequality in the U.S.", legend="Gini Index", buckets=5)
-print(plot_map)
+df_choroMap_gini <- subset(df_census, select = c(AreaName, gini_index))
+colnames(df_choroMap_gini) <- c("region", "value")
+df_choroMap_gini$region <- tolower(df_choroMap_gini$region)
+plot_map_gini <- state_choropleth(df_choroMap_gini, title="Income Inequality in the U.S.", legend="Gini Index")
+
+df_choroMap_income <- subset(df_census, select = c(AreaName, median_household_income))
+colnames(df_choroMap_income) <- c("region", "value")
+df_choroMap_income$region <- tolower(df_choroMap_income$region)
+plot_map_income <- state_choropleth(df_choroMap_income, title="Median Income Distribution in the U.S.", legend="Median Household Income (US Dollars)") + scale_color_brewer()
+
+
+df_choroMap_capita <- subset(df_census, select = c(AreaName, per_capita_income))
+colnames(df_choroMap_capita) <- c("region", "value")
+df_choroMap_capita$region <- tolower(df_choroMap_capita$region)
+plot_map_capita <- state_choropleth(df_choroMap_income, title="Per Capita Income in the U.S.", legend="Per Capita Income (US Dollars)")
+
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(3,1)))
+vplayout <- function(x,y) viewport(layout.pos.row = x, layout.pos.col = y)
+print(plot_map_gini, vp=vplayout(1,1))
+print(plot_map_income, vp=vplayout(2,1))
+print(plot_map_capita, vp= vplayout(3,1))
 ###
 
 ### Scatterplot
@@ -89,7 +106,8 @@ plot_scatter <- ggplot(df_scatter) +
   geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
   labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Race") +
   scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
-  theme_classic()
-    
+  theme_classic() +
+  theme(panel.background = element_rect(fill="gray10"),
+        panel.grid.major = element_line(colour="gray25"))
 print(plot_scatter)
 ###

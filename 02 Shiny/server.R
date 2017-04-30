@@ -245,7 +245,7 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
       geom_text(aes( -1,window_avg_median_income, label = round(window_avg_median_income), vjust = -.5, hjust = -.25), color="red")
   })
   
-  #----------------Begin Barchart Visualization---------------
+  #----------------Begin Map Visualization---------------
   output$choroMap1 <- renderPlot({
   df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
   colnames(df_choroMap) <- c("region", "value")
