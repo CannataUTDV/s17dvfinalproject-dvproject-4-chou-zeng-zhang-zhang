@@ -8,7 +8,6 @@ require(choroplethr)
 require(choroplethrAdmin1)
 require(choroplethrMaps)
 require(acs)
-<<<<<<< HEAD
 require(RColorBrewer)
 require(grid)
 require(gridExtra)
@@ -27,11 +26,6 @@ df_hist <- query(
 df_hist[is.na(df_hist)] <- 0
 
 df_coastal <- df_hist %>% dplyr::filter(STATE %in% c("Maine", "New Hampshire", "Massachussetts", "Rhode Island", "Connecticut", "New Jersey", "New York", "Delaware", "Maryland", "Virginia", "North Carolina","South Carolina", "Georgia","Florida", "Oregon", "Washington", "Alaska", "Hawaii", "California", "Florida", "Alabama", "Mississippi","Louisiana","Texas")) %>% data.frame(.)
-=======
-require(grid)
-require(gridExtra)
-require(RColorBrewer)
->>>>>>> cbf21e6857622f518a5fd7db362e7e51bbea7748
 
 df_landlock <- df_hist %>% dplyr::filter(STATE %in% c("Arizona", "Arkansas", "Washington DC", "Idaho", "Kentucky","Michigan","Minnesota","Montana","Nevada","New Mexico","North Dakota","Ohio","Oklahoma","Pennsylvania","Tennessee","Vermont","West Virginia")) %>% data.frame(.)
 
@@ -64,7 +58,6 @@ df_census <- query(
   data.world(propsfile="www/.data.world"),
   dataset="achou/s-17-dv-final-project", type="sql",
   query="
-<<<<<<< HEAD
   SELECT *
   FROM `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
   "
@@ -100,39 +93,3 @@ plot_scatter <- ggplot(df_scatter) +
     
 print(plot_scatter)
 ###
-=======
-  select STATE, SCORE, sum(COUNT)
-  from StateScoreCounts
-  group by STATE, SCORE
-  ORDER by STATE, SCORE"
-) %>% data.frame(.)
-
-df_hist[is.na(df_hist)] <- 0
-
-df_coastal <- df_hist %>% dplyr::filter(STATE %in% c("Maine", "New Hampshire", "Massachussetts", "Rhode Island", "Connecticut", "New Jersey", "New York", "Delaware", "Maryland", "Virginia", "North Carolina","South Carolina", "Georgia","Florida", "Oregon", "Washington", "Alaska", "Hawaii", "California", "Florida", "Alabama", "Mississippi","Louisiana","Texas")) %>% data.frame(.)
-
-df_landlock <- df_hist %>% dplyr::filter(STATE %in% c("Arizona", "Arkansas", "Washington DC", "Idaho", "Kentucky","Michigan","Minnesota","Montana","Nevada","New Mexico","North Dakota","Ohio","Oklahoma","Pennsylvania","Tennessee","Vermont","West Virginia")) %>% data.frame(.)
-
-
-plot_hist_coastal <- ggplot(df_coastal)+
-  geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity")+
-  scale_fill_brewer(type="div", palette="RdYlBu") +
-  guides(fill=FALSE) +
-  labs(x = "Test Score", y = "Count", 
-       title="Score Distribution for Coastal States") +
-  theme(title = element_text(size=12, face = "bold"))
-
-plot_hist_landlock <- ggplot(df_landlock)+
-  geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity") +
-  scale_fill_brewer(type="div", palette="RdYlBu")+
-  guides(fill=FALSE) +
-  labs(x = "Test Score", y = "Count", 
-       title = "Score Distribution for Landlocked States") +
-  theme(title = element_text(size=12, face = "bold"))
-print(plot_hist_landlock)
-grid.newpage()
-pushViewport(viewport(layout = grid.layout(3,2)))
-vplayout <- function(x,y) viewport(layout.pos.row = x, layout.pos.col = y)
-print(plot_hist_coastal, vp=vplayout(1:3,1))
-print(plot_hist_landlock, vp=vplayout(1:3,2))
->>>>>>> cbf21e6857622f518a5fd7db362e7e51bbea7748
