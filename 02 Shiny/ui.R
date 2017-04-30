@@ -100,8 +100,6 @@ dashboardPage(skin= "purple",
                          #uiOutput("regions2"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html
                          tags$h3(tags$b("Add a Title")),
                          tags$h5("Provide instructions on what to do with the button:"),
-                         sliderInput("KPI1.1", "Low:", min = 0, max = 60,  value = 60),
-                         sliderInput("KPI2.1", "Medium:", min = 60, max = 75,  value = 75),
                          actionButton(inputId = "click5",  label = "To get data, click here"),
                          hr(),
                          'Here is data for the "Barchart with Table Calculation" tab',
