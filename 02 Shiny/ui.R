@@ -6,54 +6,124 @@ require(leaflet)
 require(plotly)
 
 dashboardPage(skin= "purple",
-  dashboardHeader(title=tags$b("Project 7")),
+  dashboardHeader(title=tags$b("Project ")),
   
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Barchart Visualizations (1-3)", tabName = "viz1", icon = icon("dashboard"))
+      menuItem("Box Plots", tabName = "boxplot", icon = icon("dashboard")),
+      menuItem("Histograms", tabName = "histogram", icon = icon("dashboard")),
+      menuItem("Scatter Plots", tabName = "scatter", icon = icon("dashboard")),
+      menuItem("Crosstabs, KPIs, Parameters", tabName = "crosstab", icon = icon("dashboard")),
+      menuItem("Barchart Table Calculations", tabName = "barchart", icon = icon("dashboard"))
       )
     ),
   
   dashboardBody(
     tabItems(
-      # Begin Barchart 1 tab content.
-      tabItem(tabName = "viz1",
+      #------------------------------------------Begin Box Plots tab content-------------------------------------------------
+       tabItem(tabName = "boxplot",
+               tabsetPanel(
+                 tabPanel("Data",  
+                          #uiOutput("boxplotRegions"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html,
+                          tags$h3(tags$b("Add a Title")),
+                          tags$h6("Provide instructions on what to do with the button:"),
+                          hr(), # Add space after button.
+                          actionButton(inputId = "click1",  label = "To get data, click here"),
+                          hr(), 
+                          DT::dataTableOutput("boxplotData1")
+                 ),
+                 tabPanel("Simple Box Plot", 
+                          sliderInput("boxSalesRange1", "Number of Households:", # See https://shiny.rstudio.com/articles/sliders.html
+                          min = 0, 100,#min(df1$number_households_participated), max = max(df1$number_households_participated), 
+                          value = 0, 100),#c(min(df1$number_households_participated), max(df1$number_households_participated)))
+                          # sliderInput("range5a", "Loop through Quarters:", 
+                          # min(globals$Order_Date), 
+                          # max(globals$Order_Date) + .75, 
+                          # max(globals$Order_Date), 
+                          # step = 0.25,
+                          # animate=animationOptions(interval=2000, loop=T)),
+                          plotlyOutput("boxplotPlot1", height=500))
+               )),
+      
+      #------------------------------------------Begin Histogram tab content------------------------------------------------
+      tabItem(tabName = "histogram",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Barchart Data")),
+                         tags$h3(tags$b("Add a Title")),
+                         tags$h6("Provide instructions on what to do with the button:"),
                          hr(),
-                         actionButton(inputId = "click4",  label = "To get data, click here"),
+                         actionButton(inputId = "click2",  label = "To get data, click here"),
                          hr(), # Add space after button.
-                         tags$h4(tags$b('Here is data for the "Average Growth for 5 Highest Revenue State" tab')),
+                         DT::dataTableOutput("histogramData1")
+                ),
+                tabPanel("Simple Histogram", plotlyOutput("histogramPlot1", height=1000))
+              )
+      ),
+      #------------------------------------------Begin Scatter Plot tab content----------------------------------------------
+      tabItem(tabName = "scatter",
+              tabsetPanel(
+                tabPanel("Data",  
+                         #uiOutput("scatterStates"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html,
+                         tags$h3(tags$b("Add a Title")),
+                         tags$h6("Provide instructions on what to do with the button:"),
+                         hr(),
+                         actionButton(inputId = "click3",  label = "To get data, click here"),
+                         hr(), # Add space after button.
+                         DT::dataTableOutput("scatterData1")
+                ),
+                tabPanel("Simple Scatter Plot", plotlyOutput("scatterPlot1", height=1000))
+              )
+      ),
+      #------------------------------------------Begin Crosstabs KPI Parameters --------------------------------------------
+      tabItem(tabName = "crosstab",
+              tabsetPanel(
+                tabPanel("Data",
+                         tags$h3(tags$b("KPI: Growth (Percent)")),
+                         tags$h6("Adjust the intervals for the KPI levels using the sliders:"),
+                         hr(),
+                         sliderInput("KPI1", "Low:", min = 0, max = 10,  value = 10),
+                         sliderInput("KPI2", "Medium:", min = 11, max = 50,  value = 50),
+                         sliderInput("KPI3", "High:", min = 51, max = 200, value = 200),
+                         actionButton(inputId = "click4",  label = "Fetch Data"),
+                         hr(),
+                         DT::dataTableOutput("crosstabData1")
+                ),
+                tabPanel("Crosstab Plot", plotOutput("crosstabPlot1", height=1000)),
+                tabPanel("Details", 
+                         tags$h3(tags$b("About this visualization:")),
+                         tags$p("This visualization examines the relationship between the number of years that companies were on the", tags$span(tags$a(href="https://www.inc.com/inc5000/list/2016/", target="_blank", "Inc. 5000 list of fastest growing companies in America")), "and the percent growth they experienced in the past 3 years. The numbers in each cell represent the percent growth for the companies in 2016. The KPI is the level of growth, defined as low (0-10%), medium (11%-50%), and high (51%+)."
+                         ),
+                         tags$br(),
+                         tags$p("We looked at how these metrics varied from state to state, and we can see that, in general, younger companies have had much larger growth than those who have been on the list in recent years. This is most likely due to these companies being smaller and having less net worth, thus amplifying the magnitude of any increase in growth.")
+                         ))),
+      #------------------------------------------Begin Barchart 1 tab content-----------------------------------------------
+      # Begin Barchart tab content.
+      tabItem(tabName = "barchart",
+              tabsetPanel(
+                tabPanel("Data",  
+                         #uiOutput("regions2"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html
+                         tags$h3(tags$b("Add a Title")),
+                         tags$h6("Provide instructions on what to do with the button:"),
+                         hr(), # Add space after button.
+                         actionButton(inputId = "click5",  label = "To get data, click here"),
+                         hr(),
+                         'Here is data for the "Barchart with Table Calculation" tab',
                          hr(),
                          DT::dataTableOutput("barchartData1"),
                          hr(),
-                         tags$h4(tags$b('Here is data for the "High Revenue ID Sets on Growth" tab')),
+                         'Here is data for the "High Discount Orders" tab',
                          hr(),
                          DT::dataTableOutput("barchartData2"),
                          hr(),
-                         tags$h4(tags$b('Here is data for the "Average Revenue for 5 Highest Revenue State" tab')),
+                         'Here is data for the "High Sales Customers" tab',
                          hr(),
-                         DT::dataTableOutput("barchartData3")
-                ),
-                tabPanel("Vis.1: Average Growth for 5 Highest Revenue State", "Black = Average Growth Rate, Red = Average Growth Rates of Five States, and  Blue = Average Growth Rate - Average Growth Rate of Five States", plotOutput("barchartPlot1", height=1500),
-                          tags$h4(tags$b('Insights of the Graph')),
-                          tags$h5("This barchart displays the average growth rate in selected states for selected industry. The states selected are the top 5 states which has the highest sum revenue during 2015. The industry set used as filter includes the 6 industries which has the highest sum revenue in 2015. The horizontal bars represent the average growth rates for the specific industry in individual states. The window reference line is the average of the average growth rate for the industry in selectedstates."),
-                         tags$h5("From the barchart we see that in Business product and services industry, state Georgia is growing fast, because its average growth rate is extremely higher than other states??. In Construction industry, California is playing the leading role. And in Human Resources industry, Florida shows the fastest growth. However, for Health industry, there is no obvious leading state; all states developed it well during year2015.")
-                         ),
-                tabPanel("Vis.2: High Revenue ID Sets on Growth", plotlyOutput("barchartPlot2", height=500),
-                         tags$h4(tags$b('Insights of the Graph')),
-                         tags$h5("We create a ID Set using company id and its revenue. We select companies whose revenue greater than 10 billion as high revenue companies, and there are 19 of them. The bar chart displays the growth rate for these 19 companies."),
-                         tags$h5("Among these 19 companies with highest revenue, only two companies' growth rate exceeds the average growth rate across the total 5000 companies.")
-                         ),
-                tabPanel("Vis.3: Average Revenue for 5 Highest Revenue State", "Black = Average Revenue, Red = Average Revenue of all Companies within a State, and  Blue = Average Revenue - Average Revenue of all Companies within a State", plotOutput("barchartPlot3", height=1500),
-                         tags$h4(tags$b('Insights of the Graph')),
-                         tags$h5("We first create a set of the five states with the highest revenue. For all the companies in these five states, we group them by years on the list. The bar chart shows the average revenue each group. We also calculate the difference between each bar and the average for the pane."),
-                         tags$h5("In Texas, the longer companies stay on the list, the companies tend to have higher revenue. However, the extremes appear at the 9th year in Georgia and at 7th years in New York.")
-                         )
+                         DT::dataTableOutput("barchartData3")),
+                tabPanel("Barchart with Table Calculation", "*Add description for each colored line", plotOutput("barchartPlot1", height=1500)),
+                tabPanel("High Discount Orders", leafletOutput("barchartMap1"), height=900 ),
+                tabPanel("High Sales Customers", plotlyOutput("barchartPlot2", height=700) )
               )
       )
-      # End Barchart 1 tab content.
+      # End Barchart tab content.
       
     )
   )
