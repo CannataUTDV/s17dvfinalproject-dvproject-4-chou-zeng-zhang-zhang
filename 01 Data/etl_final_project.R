@@ -34,8 +34,11 @@ colnames(df) <- c("state", "number_of_schools", "total_takers", "yield_per_teach
                   "total_hispanic", "total_hispanic_passed", "percent_hispanic_passed", 
                   "total_hispanic_female", "total_hispanic_female_passed", "percent_hispanic_female_passed", "percent_hispanic_taking", "percent_hispanic_state", "attempt_rate_hispanic")
 
+#print the df so the notebook can see the dataset
+print(head(df, 10))
 # Write finished dataframe to csv file
 write.csv(df, file = "ap_cs_2013_states_clean.csv", row.names=FALSE, na="")
+
 
 ############################################################
 # Steps for creating csv of ACS 2015 Census Data
