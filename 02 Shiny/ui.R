@@ -26,23 +26,23 @@ dashboardPage(skin= "purple",
                tabsetPanel(
                  tabPanel("Data",  
                           #uiOutput("boxplotRegions"), # See http://shiny.rstudio.com/gallery/dynamic-ui.html,
-                          tags$h3(tags$b("Add a Title")),
-                          tags$h5("Provide instructions on what to do with the button:"),
+                          tags$h3(tags$b("Test Taker Per Teacher by Region")),
+                          tags$h5("Click the button below to see the yield per teach for different regions"),
                           actionButton(inputId = "click1",  label = "To get data, click here"),
                           hr(), 
                           DT::dataTableOutput("boxplotData1")
                  ),
                  tabPanel("Simple Box Plot", 
-                          sliderInput("boxSalesRange1", "Number of Households:", # See https://shiny.rstudio.com/articles/sliders.html
-                          min = 0, 100,#min(df1$number_households_participated), max = max(df1$number_households_participated), 
-                          value = 0, 100),#c(min(df1$number_households_participated), max(df1$number_households_participated)))
+                          #sliderInput("boxSalesRange1", "Number of Households:", # See https://shiny.rstudio.com/articles/sliders.html
+                          #min = 0, 100,#min(df1$number_households_participated), max = max(df1$number_households_participated), 
+                          #value = 0, 100),#c(min(df1$number_households_participated), max(df1$number_households_participated)))
                           # sliderInput("range5a", "Loop through Quarters:", 
                           # min(globals$Order_Date), 
                           # max(globals$Order_Date) + .75, 
                           # max(globals$Order_Date), 
                           # step = 0.25,
                           # animate=animationOptions(interval=2000, loop=T)),
-                          plotlyOutput("boxplotPlot1", height=500))
+                          plotOutput("boxplotPlot1", height=700))
                )),
       
       #------------------------------------------Begin Histogram tab content------------------------------------------------

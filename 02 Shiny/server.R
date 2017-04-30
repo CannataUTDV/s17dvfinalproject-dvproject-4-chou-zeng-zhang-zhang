@@ -39,16 +39,14 @@ shinyServer(function(input, output) {
   
   # Create dataframe for the BoxPlot Tab
   df1 <- eventReactive(input$click1, {
-    tdf = query(
+    BoxPlot <- query(
       data.world(propsfile = "www/.data.world"),
-      dataset="jadyzeng/s-17-dv-project-6", type="sql",
-      query="SELECT inc5000_2016_clean.yrs_on_list, income_census.State, AVG(inc5000_2016_clean.revenue) AS AVG_Revenue
-      FROM inc5000_2016_clean LEFT OUTER JOIN income_census
-      ON inc5000_2016_clean.state_s = State
-      WHERE State in ('CA','FL','GA','NY','TX')
-      Group by yrs_on_list, income_census.State
-      Order by income_census.State, yrs_on_list"
-    )})
+      dataset="achou/s-17-dv-final-project", type="sql",
+      query="select state_table.census_region_name as Region, ap_cs_2013_states_clean.yield_per_teacher as Yield
+      from state_table left outer join ap_cs_2013_states_clean
+      on state_table.name=ap_cs_2013_states_clean.state"
+    )  %>% data.frame(.)
+    })
   
   # Create dataframe for the Histogram Tab
 
@@ -180,13 +178,13 @@ shinyServer(function(input, output) {
   #--------------------------------------------Plot visualizations-------------------------------------------
   
   #-----------------Begin Boxplot Visualization----------------
-  output$boxplotPlot1 <- renderPlotly({
+  output$boxplotPlot1 <- renderPlot({
     #View(dfbp3())
-    p <- ggplot(df1()) + 
-      geom_boxplot(aes(x=State, y=AVG_Revenue, colour=State)) + 
-      #ylim(0, input$boxSalesRange1[2]) +
-      theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))
-    ggplotly(p)
+    Plot1 <- ggplot(df1()) + 
+      geom_boxplot(aes(x=Region, y=Yield, colour=Region)) + 
+      theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))+
+      labs(y = "Yield per Teacher")
+    print(Plot1)
   })  
 
   #-----------------Begin Histogram Visualization--------------
@@ -223,7 +221,9 @@ shinyServer(function(input, output) {
       geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
       labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Race") +
       scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
-      theme_classic()
+      theme_classic() +
+      theme(panel.background = element_rect(fill="gray10"),
+            panel.grid.major = element_line(colour="gray25"))
     print(plot_scatter)
   })
   

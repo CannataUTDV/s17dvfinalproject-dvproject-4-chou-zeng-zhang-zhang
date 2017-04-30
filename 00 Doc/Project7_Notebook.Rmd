@@ -72,16 +72,57 @@ source("../01 Data/original_data.R")
 
 
 ### ETL Logic
+
    > 1. As seen from the previous table, the uncleaned AP CS data is filled up with empty columns, asterisks and multiple columns that we will not use in our data visualization. We followed the following process to clean up the data:
    
        i. Build an ETL script to pull the data from data.world and proceed the cleaning process 
+```{r, eval=FALSE}
+### Load Required Packages
+# Set the working directory to access CSVs
+setwd("~/s17dvfinalproject-dvproject-4-chou-zeng-zhang-zhang/01 Data")
+
+# df <- read_excel("./01 Data/DetailedStateInfoAP-CS-A-2006-2013-with-PercentBlackAndHIspanicByState-fixed.xlsx", sheet = "Sheet2")
+df <- read_excel("../01 Data/DetailedStateInfoAP-CS-A-2006-2013-with-PercentBlackAndHIspanicByState-fixed.xlsx", sheet = "Sheet2")
+```
        ii. Remove empty column from dataframe.
+```{r, eval=FALSE}
+# Remove empty column from dataframe
+df <- subset(df, select = -c(X__1))
+```
        iii. Remove last 4 rows of dataframe.
+```{r, eval=FALSE}
+# Remove last 4 rows of dataframe
+n <- dim(df)[1]
+df <- df[1:(n-4), ]
+```
        iv. Remove asterisks (*) from dataframe and replace them with ""
+```{r, eval=FALSE}
+# Remove asterisks (*) from dataframe and replace with ""
+df <- lapply(df, function(x) {
+  gsub("\\*", "", x)
+})
+```
        v. Replace any record that is "" with NA.
+```{r, eval=FALSE}
+# Replace any record that is "" with NA
+df[df == ""] <- NA
+```
        vi. Rename columns of dataframe for clarity and simplicity.
+```{r, eval=FALSE}
+# Rename columns of dataframe
+colnames(df) <- c("state", "number_of_schools", "total_takers", "yield_per_teacher", 
+                  "total_passed", "percent_passed", 
+                  "total_female","total_female_passed", "percent_female_passed", "percent_female_taking", 
+                  "total_black", "total_black_passed", "percent_black_passed", "percent_black_taking", "percent_black_state", "attempt_rate_black", 
+                  "total_black_females", "total_black_females_passed", "percent_black_females_passed", 
+                  "total_hispanic", "total_hispanic_passed", "percent_hispanic_passed", 
+                  "total_hispanic_female", "total_hispanic_female_passed", "percent_hispanic_female_passed", "percent_hispanic_taking", "percent_hispanic_state", "attempt_rate_hispanic")
+```
        vii. Generate a cleaned up dataset called "ap_cs_2013_states_clean.csv"
-       
+```{r, eval=FALSE}
+# Write finished dataframe to csv file
+write.csv(df, file = "ap_cs_2013_states_clean.csv", row.names=FALSE, na="")
+```       
    >2. In order to join the AP CS 2013 dataset to the 2015 Income Census data, we ran a query on data.world in order to rename the columns for simplicity, and we downloaded it as "acs-2015-5-e-income-queried.csv".
    >3. Use Tableau's web data connector to import the datasets. Join the two datasets together by State to merge the datasets in order for us to explore the relationship between two datasets.
    >4. We had to set the "S17 DV Project 6" data.world datasets PUBLIC in order to access and work on it in RStudio when we wrote the server code.
