@@ -192,7 +192,8 @@ shinyServer(function(input, output) {
   output$boxplotPlot1 <- renderPlot({
     ggplot(df1()) + 
     geom_boxplot(aes(x=Region, y=Yield, fill=Region), colour="black") + 
-    theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))+
+    theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5)) +
+    guides(fill = F) +
     labs(y = "Test Takers per Teacher") + 
     theme_classic()
   })  
@@ -237,7 +238,7 @@ shinyServer(function(input, output) {
     geom_smooth(aes(x = gini_index, y = attempt_rate_black, colour = "Black"), method = "loess", se = F) +
     geom_point(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"))+
     geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
-    labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Group") +
+    labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rates", x = "Gini Index", y="Attempt Rate", colour="Group") +
     scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
     theme_classic() +
     theme(panel.background = element_rect(fill="gray10"),

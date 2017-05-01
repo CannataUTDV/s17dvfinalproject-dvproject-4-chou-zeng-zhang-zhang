@@ -31,7 +31,14 @@ dashboardPage(skin= "purple",
                          DT::dataTableOutput("boxplotData1")
                          ),
                 tabPanel("Visualization", plotOutput("boxplotPlot1", height = 600)),
-                tabPanel("Details")
+                tabPanel("Details",
+                         tags$h3(tags$b("About this visualization:")),
+                         tags$p("These boxplots compare the distributions of test takers per teacher between each region. The distributions are not drastically different overall. Their spreads are rather similar, and it seems that the median ratio hovers around 10 test takers per teacher."
+                                ),
+                         tags$br(),
+                         tags$p("It seems as though the Northeast has a lower test taker to teacher ratio than the other regions. The South certainly has the most variation in its distribution, as well as possessing the highest median test taker to teacher ratio. All but one distribution contain no outliers. The West region contains two, with each being at opposite extremes of the test taker per teacher metric."
+                                )
+                         )
                 )
               ),
       # Histogram
@@ -45,22 +52,36 @@ dashboardPage(skin= "purple",
                          DT::dataTableOutput("histogramData1")
                 ),
                 tabPanel("Visualization", plotOutput("histogramPlot1", height = 600)),
-                tabPanel("Details")
-              )
-      ),
+                tabPanel("Details",
+                         tags$h3(tags$b("About this visualization:")),
+                         tags$p("We wanted to see if there was a significant difference in the distributions in the AP score counts between US states that are", 
+                                tags$span(tags$a(href="https://en.wikipedia.org/wiki/Coastal_states", target = "_blank", "geographically coastal")), 
+                                "and those that are", 
+                                tags$span(tags$a(href="https://en.wikipedia.org/wiki/List_of_landlocked_U.S._states", target = "_blank", "geographically landlocked.")),
+                                "We noticed that the distributions are almost identical, suggesting that the geography of test takers has little to do with the AP score outcomes. Also, both distributions are bimodal and almost symmetric."
+                                )
+                         )
+                )
+              ),
 
       # Scatter plot
       tabItem(tabName = "scatter",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Income Inequality and Test Attempt Ratio for Black and Hispanic Test Takers")),
+                         tags$h3(tags$b("Income Inequality and Test Attempt Rate for Black and Hispanic Test Takers")),
                          tags$h5("Click the button below to get Gini index and test attempt ratio for Blacks and Hispanics."),
                          actionButton(inputId = "click3",  label = "Fetch data"),
                          hr(),
                          DT::dataTableOutput("scatterData1")
                 ),
                 tabPanel("Visualization", plotOutput("scatterPlot1", height = 600)),
-                tabPanel("Details")
+                tabPanel("Details",
+                         tags$h3(tags$b("About this visualization:")),
+                         tags$p("We wanted to explore whether or not income inequality had an effect on the test attempt rate for Blacks and Hispanics in each state. We used the Gini index from the ACS census data in 2015 as the standard measure of income inequality for each state. The test attempt rate is the calculated as follows:",
+                                withMathJax(helpText("$$\\frac{\\% \\ minority \\ group \\ out \\ of \\ test \\ takers \\ in \\ state} {\\% \\ minority \\ group \\ out \\ of \\ state \\ population} \\cdot 100$$")),
+                                tags$p("At first glance, there seemed to be an exponential relationship between the Gini index and the test attempt rate for both groups. However, after adding fit lines (using Loess regression), we see that this initial reaction is not supported by the regression. The Gini index does not seem to have any significant effect on the attempt rates. Most of the attempt rates were less than 100, but there are some extreme values at various Gini index values for both minority groups.")
+                                )
+                         )
               )
       ),
       
