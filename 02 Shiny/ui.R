@@ -2,8 +2,6 @@
 require(shiny)
 require(shinydashboard)
 require(DT)
-require(leaflet)
-require(plotly)
 
 dashboardPage(skin= "purple",
   dashboardHeader(title=tags$b("Final Project")),
@@ -21,22 +19,22 @@ dashboardPage(skin= "purple",
   
   dashboardBody(
     tabItems(
-      #------------------------------------------Begin Box Plots tab content-------------------------------------------------
-       tabItem(tabName = "boxplot",
-               tabsetPanel(
-                 tabPanel("Data",  
-                          tags$h3(tags$b("Test Takers per Teacher by Region")),
-                          tags$h5("Click the button below to see the yield per teacher for different regions."),
-                          actionButton(inputId = "click1",  label = "Fetch Data"),
-                          hr(), 
-                          DT::dataTableOutput("boxplotData1")
-                          ),
-                 tabPanel("Visualization", plotOutput("boxplotPlot1", height=700)),
-                 tabPanel("Details")
-                 )
-               ),
       
-      #------------------------------------------Begin Histogram tab content------------------------------------------------
+      # Box plot
+      tabItem(tabName = "boxplot",
+              tabsetPanel(
+                tabPanel("Data",
+                         tags$h3(tags$b("Test Takers per Teacher by Region")),
+                         tags$h5("Click the button below to see the yield per teacher for different regions."),
+                         actionButton(inputId = "click1",  label = "Fetch data"),
+                         hr(), 
+                         DT::dataTableOutput("boxplotData1")
+                         ),
+                tabPanel("Visualization", plotOutput("boxplotPlot1", height = 600)),
+                tabPanel("Details")
+                )
+              ),
+      # Histogram
       tabItem(tabName = "histogram",
               tabsetPanel(
                 tabPanel("Data",  
@@ -46,11 +44,12 @@ dashboardPage(skin= "purple",
                          hr(), # Add space after button.
                          DT::dataTableOutput("histogramData1")
                 ),
-                tabPanel("Visualization", plotOutput("histogramPlot1", height=700)),
+                tabPanel("Visualization", plotOutput("histogramPlot1", height = 600)),
                 tabPanel("Details")
               )
       ),
-      #------------------------------------------Begin Scatter Plot tab content----------------------------------------------
+
+      # Scatter plot
       tabItem(tabName = "scatter",
               tabsetPanel(
                 tabPanel("Data",  
@@ -60,11 +59,12 @@ dashboardPage(skin= "purple",
                          hr(),
                          DT::dataTableOutput("scatterData1")
                 ),
-                tabPanel("Visualization", plotOutput("scatterPlot1", height=700)),
+                tabPanel("Visualization", plotOutput("scatterPlot1", height = 600)),
                 tabPanel("Details")
               )
       ),
-      #------------------------------------------Begin Crosstabs KPI Parameters --------------------------------------------
+      
+      # Crosstab
       tabItem(tabName = "crosstab",
               tabsetPanel(
                 tabPanel("Data",
@@ -72,11 +72,11 @@ dashboardPage(skin= "purple",
                          tags$h5("Adjust the intervals for the per capita income using the sliders:"),
                          sliderInput("KPI1", "Low:", min = 0, max = 60,  value = 60),
                          sliderInput("KPI2", "Medium:", min = 60, max = 75,  value = 75),
-                         actionButton(inputId = "click4",  label = "Fetch Data"),
+                         actionButton(inputId = "click4",  label = "Fetch data"),
                          hr(),
                          DT::dataTableOutput("crosstabData1")
                 ),
-                tabPanel("Crosstab Plot", plotOutput("crosstabPlot1", height=1000)),
+                tabPanel("Crosstab Plot", plotOutput("crosstabPlot1", height = 1000)),
                 tabPanel("Details", 
                          tags$h3(tags$b("About this visualization:")),
                          tags$p("This visualization examines the relationship between the number of years that companies were on the", tags$span(tags$a(href="https://www.inc.com/inc5000/list/2016/", target="_blank", "Inc. 5000 list of fastest growing companies in America")), "and the percent growth they experienced in the past 3 years. The numbers in each cell represent the percent growth for the companies in 2016. The KPI is the level of growth, defined as low (0-10%), medium (11%-50%), and high (51%+)."
@@ -84,8 +84,8 @@ dashboardPage(skin= "purple",
                          tags$br(),
                          tags$p("We looked at how these metrics varied from state to state, and we can see that, in general, younger companies have had much larger growth than those who have been on the list in recent years. This is most likely due to these companies being smaller and having less net worth, thus amplifying the magnitude of any increase in growth.")
                          ))),
-      #------------------------------------------Begin Barchart 1 tab content-----------------------------------------------
-      # Begin Barchart tab content.
+
+      # Barchart
       tabItem(tabName = "barchart",
               tabsetPanel(
                 tabPanel("Data",  
@@ -95,14 +95,12 @@ dashboardPage(skin= "purple",
                          hr(),
                          DT::dataTableOutput("barchartData1")
                          ),
-                tabPanel("Barchart with Table Calculation", plotOutput("barchartPlot1", height=1500)
-                         ),
-                #tabPanel("High Sales Customers", plotlyOutput("barchartPlot2", height=700)),
+                tabPanel("Barchart with Table Calculation", plotOutput("barchartPlot1", height = 1200)),
                 tabPanel("Details")
-              )),
-      # End Barchart tab content.
-      #------------------------------------------Begin Choropleth tab content-----------------------------------------------
-      # Begin Choropleth tab content.
+                )
+              ),
+
+      # Choropleth
       tabItem(tabName = "choropleth",
               tabsetPanel(
                 tabPanel("Data",  
@@ -111,11 +109,10 @@ dashboardPage(skin= "purple",
                          actionButton(inputId = "click6",  label = "Fetch data"),
                          hr(),
                          DT::dataTableOutput("choroData1")),
-                tabPanel("Visualization", plotOutput("choroMap1"), height=900),
+                tabPanel("Visualization", plotOutput("choroMap1", height = 600)),
                 tabPanel("Details")
               )
       )
-      # End Choropleth tab content.
       
     )
   )

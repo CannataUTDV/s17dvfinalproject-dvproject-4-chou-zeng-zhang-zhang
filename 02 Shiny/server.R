@@ -4,11 +4,7 @@ require(dplyr)
 require(shiny)
 require(shinydashboard)
 require(data.world)
-require(readr)
 require(DT)
-require(leaflet)
-require(plotly)
-require(lubridate)
 require(grid)
 require(gridExtra)
 require(RColorBrewer)
@@ -43,18 +39,17 @@ shinyServer(function(input, output) {
       data.world(propsfile = "www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
       query="
-      select state_table.name as State, 
-      state_table.census_region_name as Region, 
-      ROUND(ap_cs_2013_states_clean.yield_per_teacher, 2) as Yield
-      from state_table left outer join ap_cs_2013_states_clean
-      on state_table.name=ap_cs_2013_states_clean.state"
+      SELECT state_table.name AS State, 
+      state_table.census_region_name AS Region, 
+      ROUND(ap_cs_2013_states_clean.yield_per_teacher, 2) AS Yield
+      FROM state_table LEFT OUTER JOIN ap_cs_2013_states_clean
+      ON state_table.name=ap_cs_2013_states_clean.state
+      "
     )  %>% data.frame(.)
     })
   
   # Create dataframe for the Histogram Tab
-  df2 <- eventReactive(input$click2, {df_hist
-  })
-
+  df2 <- eventReactive(input$click2, {df_hist})
   
   df_coastal <-  eventReactive(input$click2, {
   df_hist %>% dplyr::filter(STATE %in% c("Maine", "New Hampshire", "Massachussetts", "Rhode Island", "Connecticut", "New Jersey", "New York", "Delaware", "Maryland", "Virginia", "North Carolina","South Carolina", "Georgia","Florida", "Oregon", "Washington", "Alaska", "Hawaii", "California", "Florida", "Alabama", "Mississippi","Louisiana","Texas")) %>% data.frame(.)
@@ -70,12 +65,12 @@ shinyServer(function(input, output) {
       data.world(propsfile="www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
       query="
-      select AreaName as State, gini_index, 
-      ROUND(ap_cs_2013_states_clean.attempt_rate_black, 2) as attempt_rate_black,
-      ROUND(ap_cs_2013_states_clean.attempt_rate_hispanic, 2) as attempt_rate_hispanic
-      from `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
-      left join `ap_cs_2013_states_clean.csv/ap_cs_2013_states_clean`
-      where `acs-2015-5-e-income-queried`.AreaName = `ap_cs_2013_states_clean`.state
+      SELECT AreaName AS State, gini_index, 
+      ROUND(ap_cs_2013_states_clean.attempt_rate_black, 2) AS attempt_rate_black,
+      ROUND(ap_cs_2013_states_clean.attempt_rate_hispanic, 2) AS attempt_rate_hispanic
+      FROM `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
+      LEFT JOIN `ap_cs_2013_states_clean.csv/ap_cs_2013_states_clean`
+      WHERE `acs-2015-5-e-income-queried`.AreaName = `ap_cs_2013_states_clean`.state
       "
     ) %>% data.frame(.)
     })  
@@ -86,10 +81,10 @@ shinyServer(function(input, output) {
       data.world(propsfile = "www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
       query="
-      SELECT StateScoreCounts.SCORE as Score,
-      ap_cs_2013_states_clean.state as State, 
-      StateScoreCounts.COUNT as Count,
-      ROUND(avg(ap_cs_2013_states_clean.percent_passed), 2) as Percent_Passed, 
+      SELECT StateScoreCounts.SCORE AS Score,
+      ap_cs_2013_states_clean.state AS State, 
+      StateScoreCounts.COUNT AS Count,
+      ROUND(avg(ap_cs_2013_states_clean.percent_passed), 2) AS Percent_Passed, 
       
       case
       when avg(ap_cs_2013_states_clean.percent_passed) < ? then '03 Low'
@@ -134,7 +129,8 @@ shinyServer(function(input, output) {
     ROUND(ap_cs_2013_states_clean.percent_hispanic_taking, 2) AS percent_hispanic_taking
     From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried` 
     on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
-    WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000"
+    WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000
+    "
     ) %>% data.frame(.)
             
   df6 <- melt(tdf6)
@@ -145,36 +141,50 @@ shinyServer(function(input, output) {
       tdf = query(
         data.world(propsfile="www/.data.world"),
         dataset="achou/s-17-dv-final-project", type="sql",
-        query="SELECT * FROM `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`"
+        query="
+        SELECT * 
+        FROM `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
+        "
       ) %>% data.frame(.)
   })
 
   
-  # ------------------------------------Output data tables for each visualization--------------------------
+  # ---------------Output data tables for each visualization--------------
   
-  output$boxplotData1 <- renderDataTable({DT::datatable(df1(), rownames = FALSE,
-                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
-  })
+  output$boxplotData1 <- renderDataTable({DT::datatable(df1(), 
+                                                        rownames = FALSE,
+                                                        extensions = list(Responsive = TRUE, FixedHeader = TRUE)
+                                                        )
+    })
   
-  output$histogramData1 <- renderDataTable({DT::datatable(df2(), rownames = FALSE,
-                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
-  })
+  output$histogramData1 <- renderDataTable({DT::datatable(df2(), 
+                                                          rownames = FALSE,
+                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE)
+                                                          )
+    })
   
-  output$scatterData1 <- renderDataTable({DT::datatable(df3(), rownames = FALSE,
-                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE))
-  })
+  output$scatterData1 <- renderDataTable({DT::datatable(df3(), 
+                                                        rownames = FALSE,
+                                                        extensions = list(Responsive = TRUE, FixedHeader = TRUE)
+                                                        )
+    })
   
-  output$crosstabData1 <- renderDataTable({DT::datatable(df4(), rownames = FALSE, 
-                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE))}
-  )
+  output$crosstabData1 <- renderDataTable({DT::datatable(df4(), 
+                                                         rownames = FALSE, 
+                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE)
+                                                         )
+    })
   
-  output$barchartData1 <- renderDataTable({DT::datatable(df5(), rownames = FALSE,
-                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
-  })
+  output$barchartData1 <- renderDataTable({DT::datatable(df5(), 
+                                                         rownames = FALSE,
+                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE) 
+                                                         )
+    })
   
   output$choroData1 <- renderDataTable({DT::datatable(df7(), rownames = FALSE,
-                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
-  })
+                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE)
+                                                      )
+    })
   
   #--------------Plot visualizations--------------------
   
@@ -183,7 +193,7 @@ shinyServer(function(input, output) {
     ggplot(df1()) + 
     geom_boxplot(aes(x=Region, y=Yield, fill=Region), colour="black") + 
     theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))+
-    labs(y = "Yield per Teacher") + 
+    labs(y = "Test Takers per Teacher") + 
     theme_classic()
   })  
 
@@ -227,7 +237,7 @@ shinyServer(function(input, output) {
     geom_smooth(aes(x = gini_index, y = attempt_rate_black, colour = "Black"), method = "loess", se = F) +
     geom_point(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"))+
     geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
-    labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Race") +
+    labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Group") +
     scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
     theme_classic() +
     theme(panel.background = element_rect(fill="gray10"),
@@ -248,22 +258,25 @@ shinyServer(function(input, output) {
   
   #----------------Barchart---------------
   output$barchartPlot1 <- renderPlot({
-    ggplot(df6, aes(State, value, fill = variable)) +
-    scale_y_continuous(labels = scales::comma) + # no scientific notation
+    ggplot(df6, aes(State, value, fill = factor(variable, labels=c("Female", "Black", "Hispanic")))) +
     theme(axis.text.x=element_text(angle=0, size=12, vjust=0.5)) +
     theme(axis.text.y=element_text(size=12, hjust=0.5)) +
-    geom_bar(stat= 'identity',position = 'dodge') +
+    geom_bar(stat= 'identity', position = 'dodge') +
     coord_flip() +
-    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)),position = position_dodge(width = 1),colour="black", hjust=-.5)+
-    labs(fill = "Legend", y = "Taking Rate")
-  })
+    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)), position = position_dodge(width = 1), colour="black", hjust=-.5)+
+    labs(fill = "Group", y = "Percent of Total Test Takers in State")
+    })
   
   #----------------Choropleth Map---------------
   output$choroMap1 <- renderPlot({
     df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
     colnames(df_choroMap) <- c("region", "value")
     df_choroMap$region <- tolower(df_choroMap$region)
-    state_choropleth(df_choroMap, title="Income Inequality in the U.S.", legend="Gini Index")
-  })
+    state_choropleth(df_choroMap, 
+                     title="Income Inequality in the U.S.", 
+                     legend="Gini Index", 
+                     buckets = 5
+                     )
+    })
 
 })
