@@ -49,7 +49,6 @@ shinyServer(function(input, output) {
     })
   
   # Create dataframe for the Histogram Tab
-
   df2 <- eventReactive(input$click2, {df_hist
   })
 
@@ -97,7 +96,7 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
     )  %>% data.frame()
   })
   
-  # Create dataframe for Barchart Visualization 1
+  # Create dataframe for Barchart Tab
   df5 <- eventReactive(input$click5, {
     tdf5 = query(
         data.world(propsfile = "www/.data.world"),
@@ -160,26 +159,23 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
   output$barchartData1 <- renderDataTable({DT::datatable(df5(), rownames = FALSE,
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
-  output$barchartData2 <- renderDataTable({DT::datatable(df6, rownames = FALSE,
-                                                         extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
-  })
+  
   output$choroData1 <- renderDataTable({DT::datatable(df7(), rownames = FALSE,
                                                          extensions = list(Responsive = TRUE, FixedHeader = TRUE) )
   })
   
-  #--------------------------------------------Plot visualizations-------------------------------------------
+  #--------------Plot visualizations--------------------
   
-  #-----------------Begin Boxplot Visualization----------------
+  #-----------------Boxplot----------------
   output$boxplotPlot1 <- renderPlot({
-    #View(dfbp3())
-    Plot1 <- ggplot(df1()) + 
-      geom_boxplot(aes(x=Region, y=Yield, colour=Region)) + 
-      theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))+
-      labs(y = "Yield per Teacher")
-    print(Plot1)
+    ggplot(df1()) + 
+    geom_boxplot(aes(x=Region, y=Yield, fill=Region), colour="black") + 
+    theme(axis.text.x=element_text(angle=90, size=10, vjust=0.5))+
+    labs(y = "Yield per Teacher") + 
+    theme_classic()
   })  
 
-  #-----------------Begin Histogram Visualization--------------
+  #-----------------Histogram--------------
   output$histogramPlot1 <- renderPlot({
     plot_hist_coastal <- ggplot(df_coastal())+
       geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity")+
@@ -187,7 +183,11 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
       guides(fill=FALSE) +
       labs(x = "Test Score", y = "Count", 
            title="Score Distribution for Coastal States") +
-      theme(title = element_text(size=12, face = "bold"))
+      theme(title = element_text(size=12, face = "bold"),
+            panel.background = element_rect(fill="gray20"),
+            panel.grid.major = element_line(colour = "gray30"),
+            panel.grid.minor = element_line(colour = "gray30")
+            )
     
     plot_hist_landlock <- ggplot(df_landlock())+
       geom_histogram(aes(x=factor(SCORE), y=COUNT, fill=factor(SCORE)), stat="identity") +
@@ -195,7 +195,11 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
       guides(fill=FALSE) +
       labs(x = "Test Score", y = "Count", 
            title = "Score Distribution for Landlocked States") +
-      theme(title = element_text(size=12, face = "bold"))
+      theme(title = element_text(size=12, face = "bold"), 
+            panel.background = element_rect(fill="gray20"),
+            panel.grid.major = element_line(colour = "gray30"),
+            panel.grid.minor = element_line(colour = "gray30")
+            )
     
     grid.newpage()
     pushViewport(viewport(layout = grid.layout(3,2)))
@@ -204,52 +208,49 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
     print(plot_hist_landlock, vp=vplayout(1:3,2))
   })
   
-  #----------------Begin Scatter Plot Visualization------------
+  #----------------Scatter Plot------------
   output$scatterPlot1 <- renderPlot({
-    plot_scatter <- ggplot(df3()) +
-      geom_point(aes(x = gini_index, y = attempt_rate_black, colour="Black"))+
-      geom_smooth(aes(x = gini_index, y = attempt_rate_black, colour = "Black"), method = "loess", se = F) +
-      geom_point(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"))+
-      geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
-      labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Race") +
-      scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
-      theme_classic() +
-      theme(panel.background = element_rect(fill="gray10"),
-            panel.grid.major = element_line(colour="gray25"))
-    print(plot_scatter)
+    ggplot(df3()) +
+    geom_point(aes(x = gini_index, y = attempt_rate_black, colour="Black"))+
+    geom_smooth(aes(x = gini_index, y = attempt_rate_black, colour = "Black"), method = "loess", se = F) +
+    geom_point(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"))+
+    geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
+    labs(title="Influence of Income Inequality on Black and Hispanic Attempt Rate", x = "Gini Index", y="Attempt Rate", colour="Race") +
+    scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
+    theme_classic() +
+    theme(panel.background = element_rect(fill="gray10"),
+          panel.grid.major = element_line(colour="gray25"))
   })
   
-  #----------------Begin Crosstab KPI Parameters Visualization- 
-  output$crosstabPlot1 <- renderPlot({ggplot(df4()) + 
-      theme_light()+
-      theme(axis.text.x=element_text(size=10, vjust=0.5), axis.title.x=element_text(size=13)) + 
-      theme(axis.text.y=element_text(size=10, hjust=0.5), axis.title.y=element_text(size=13)) +
-      geom_text(aes(x=Score, y=State, label=Count), size=4) +
-      geom_tile(aes(x=Score, y=State, fill=kpi), alpha=0.50, color = "gray") + 
-      scale_x_continuous(breaks=seq(1, 13, 1)) +
-      labs(fill = "Level of Growth", x = "Per Capita")
+  #----------------Crosstab-------------
+  output$crosstabPlot1 <- renderPlot({
+    ggplot(df4()) + 
+    theme_light() +
+    theme(axis.text.x=element_text(size=10, vjust=0.5), axis.title.x=element_text(size=13)) + 
+    theme(axis.text.y=element_text(size=10, hjust=0.5), axis.title.y=element_text(size=13)) +
+    geom_text(aes(x=Score, y=State, label=Count), size=4) +
+    geom_tile(aes(x=Score, y=State, fill=kpi), alpha=0.50, color = "gray") + 
+    scale_x_continuous(breaks=seq(1, 13, 1)) +
+    labs(fill = "Level of Growth", x = "Per Capita")
   })
   
-  #----------------Begin Barchart Visualization---------------
-  output$barchartPlot1 <- renderPlot({ggplot(df6, aes(State, value, fill = variable)) +
-      scale_y_continuous(labels = scales::comma) + # no scientific notation
-      theme(axis.text.x=element_text(angle=0, size=12, vjust=0.5)) + 
-      theme(axis.text.y=element_text(size=12, hjust=0.5)) +
-      geom_bar(stat= 'identity',position = 'dodge') + 
-      
-      coord_flip() +
-      geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)),position = position_dodge(width = 1),colour="black", hjust=-.5) 
+  #----------------Barchart---------------
+  output$barchartPlot1 <- renderPlot({
+    ggplot(df6, aes(State, value, fill = variable)) +
+    scale_y_continuous(labels = scales::comma) + # no scientific notation
+    theme(axis.text.x=element_text(angle=0, size=12, vjust=0.5)) +
+    theme(axis.text.y=element_text(size=12, hjust=0.5)) +
+    geom_bar(stat= 'identity',position = 'dodge') +
+    coord_flip() +
+    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)),position = position_dodge(width = 1),colour="black", hjust=-.5)
   })
   
-  #----------------Begin Barchart Visualization---------------
+  #----------------Choropleth Map---------------
   output$choroMap1 <- renderPlot({
-  df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
-  colnames(df_choroMap) <- c("region", "value")
-  df_choroMap$region <- tolower(df_choroMap$region)
-  plot_map <- state_choropleth(df_choroMap, title="Income Inequality in the U.S.", legend="Gini Index")
-  print(plot_map)
+    df_choroMap <- subset(df7(), select = c(AreaName, gini_index))
+    colnames(df_choroMap) <- c("region", "value")
+    df_choroMap$region <- tolower(df_choroMap$region)
+    state_choropleth(df_choroMap, title="Income Inequality in the U.S.", legend="Gini Index")
   })
-  
-  
-  # End Barchart Tab ___________________________________________________________
+
 })
