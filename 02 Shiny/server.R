@@ -80,17 +80,17 @@ shinyServer(function(input, output) {
     query(
       data.world(propsfile = "www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
-      query="SELECT StateScoreCounts.SCORE as Score,`acs-2015-5-e-income-queried`.AreaName as State, StateScoreCounts.COUNT as Count,
-avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita, 
+      query="SELECT StateScoreCounts.SCORE as Score,ap_cs_2013_states_clean.state as State, StateScoreCounts.COUNT as Count,
+avg(ap_cs_2013_states_clean.percent_passed) as Percent_Passed, 
       case
-      when avg(`acs-2015-5-e-income-queried`.per_capita_income) < ? then '03 Low'
-      when avg(`acs-2015-5-e-income-queried`.per_capita_income) < ? then '02 Medium'
+      when avg(ap_cs_2013_states_clean.percent_passed) < ? then '03 Low'
+      when avg(ap_cs_2013_states_clean.percent_passed) < ? then '02 Medium'
       else '01 High'
       end AS kpi
-      FROM StateScoreCounts LEFT OUTER JOIN `acs-2015-5-e-income-queried`
-      ON StateScoreCounts.STATE = `acs-2015-5-e-income-queried`.AreaName
-      GROUP BY StateScoreCounts.SCORE,`acs-2015-5-e-income-queried`.AreaName, StateScoreCounts.COUNT
-      ORDER BY StateScoreCounts.SCORE,`acs-2015-5-e-income-queried`.AreaName, StateScoreCounts.COUNT
+      FROM StateScoreCounts LEFT OUTER JOIN ap_cs_2013_states_clean
+      ON StateScoreCounts.STATE = ap_cs_2013_states_clean.state
+      GROUP BY StateScoreCounts.SCORE,ap_cs_2013_states_clean.state, StateScoreCounts.COUNT
+      ORDER BY StateScoreCounts.SCORE,ap_cs_2013_states_clean.state, StateScoreCounts.COUNT
       ",
       queryParameters = list (KPI_Low(),KPI_Medium())
     )  %>% data.frame()
@@ -101,10 +101,10 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
     tdf5 = query(
         data.world(propsfile = "www/.data.world"),
         dataset="achou/s-17-dv-final-project", type="sql",
-        query="SELECT ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
-       ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
-        ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking,
-        ap_cs_2013_states_clean.state
+        query="SELECT  ap_cs_2013_states_clean.state As State,
+        ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
+        ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
+        ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking
         From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
         on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
         WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000
@@ -116,10 +116,10 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
   tdf6 <- query(
     data.world(propsfile = "www/.data.world"),
     dataset="achou/s-17-dv-final-project", type="sql",
-    query="SELECT ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
+    query="SELECT ap_cs_2013_states_clean.state AS State,
+                  ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
                   ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
-                  ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking,
-                  ap_cs_2013_states_clean.state AS State
+                  ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking
           From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
           on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
           WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000"
@@ -231,7 +231,7 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
     geom_text(aes(x=Score, y=State, label=Count), size=4) +
     geom_tile(aes(x=Score, y=State, fill=kpi), alpha=0.50, color = "gray") + 
     scale_x_continuous(breaks=seq(1, 13, 1)) +
-    labs(fill = "Level of Growth", x = "Per Capita")
+    labs(fill = "Passed Rate", x = "Score")
   })
   
   #----------------Barchart---------------
@@ -242,7 +242,8 @@ avg(`acs-2015-5-e-income-queried`.per_capita_income) as avg_per_capita,
     theme(axis.text.y=element_text(size=12, hjust=0.5)) +
     geom_bar(stat= 'identity',position = 'dodge') +
     coord_flip() +
-    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)),position = position_dodge(width = 1),colour="black", hjust=-.5)
+    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)),position = position_dodge(width = 1),colour="black", hjust=-.5)+
+    labs(fill = "Legend", y = "Taking Rate")
   })
   
   #----------------Choropleth Map---------------

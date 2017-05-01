@@ -68,10 +68,10 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "crosstab",
               tabsetPanel(
                 tabPanel("Data",
-                         tags$h3(tags$b("KPI: Per Capita Income")),
+                         tags$h3(tags$b("KPI: Passed Rate")),
                          tags$h5("Adjust the intervals for the per capita income using the sliders:"),
-                         sliderInput("KPI1", "Low:", min = 0, max = 26000,  value = 26000),
-                         sliderInput("KPI2", "Medium:", min = 26000, max = 32000,  value = 32000),
+                         sliderInput("KPI1", "Low:", min = 0, max = 60,  value = 60),
+                         sliderInput("KPI2", "Medium:", min = 60, max = 75,  value = 75),
                          actionButton(inputId = "click4",  label = "Fetch Data"),
                          hr(),
                          DT::dataTableOutput("crosstabData1")
@@ -89,13 +89,13 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "barchart",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Add a Title")),
+                         tags$h3(tags$b("Different Taking Rates by High Income States")),
                          tags$h5("Click the button below to see the percentage of minorities taking the test for each state."),
                          actionButton(inputId = "click5",  label = "Fetch data"),
                          hr(),
                          DT::dataTableOutput("barchartData1")
                          ),
-                tabPanel("Barchart with Table Calculation", plotlyOutput("barchartPlot1", height=1500)
+                tabPanel("Barchart with Table Calculation", plotOutput("barchartPlot1", height=1500)
                          ),
                 #tabPanel("High Sales Customers", plotlyOutput("barchartPlot2", height=700)),
                 tabPanel("Details")
