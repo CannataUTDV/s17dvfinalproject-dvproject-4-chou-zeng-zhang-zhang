@@ -42,7 +42,10 @@ shinyServer(function(input, output) {
     BoxPlot <- query(
       data.world(propsfile = "www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
-      query="select state_table.name as State, state_table.census_region_name as Region, ap_cs_2013_states_clean.yield_per_teacher as Yield
+      query="
+      select state_table.name as State, 
+      state_table.census_region_name as Region, 
+      ROUND(ap_cs_2013_states_clean.yield_per_teacher, 2) as Yield
       from state_table left outer join ap_cs_2013_states_clean
       on state_table.name=ap_cs_2013_states_clean.state"
     )  %>% data.frame(.)
@@ -67,7 +70,9 @@ shinyServer(function(input, output) {
       data.world(propsfile="www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
       query="
-      select AreaName as State, gini_index, ap_cs_2013_states_clean.attempt_rate_black, ap_cs_2013_states_clean.attempt_rate_hispanic
+      select AreaName as State, gini_index, 
+      ROUND(ap_cs_2013_states_clean.attempt_rate_black, 2) as attempt_rate_black,
+      ROUND(ap_cs_2013_states_clean.attempt_rate_hispanic, 2) as attempt_rate_hispanic
       from `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
       left join `ap_cs_2013_states_clean.csv/ap_cs_2013_states_clean`
       where `acs-2015-5-e-income-queried`.AreaName = `ap_cs_2013_states_clean`.state
@@ -80,13 +85,18 @@ shinyServer(function(input, output) {
     query(
       data.world(propsfile = "www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
-      query="SELECT StateScoreCounts.SCORE as Score,ap_cs_2013_states_clean.state as State, StateScoreCounts.COUNT as Count,
-avg(ap_cs_2013_states_clean.percent_passed) as Percent_Passed, 
+      query="
+      SELECT StateScoreCounts.SCORE as Score,
+      ap_cs_2013_states_clean.state as State, 
+      StateScoreCounts.COUNT as Count,
+      ROUND(avg(ap_cs_2013_states_clean.percent_passed), 2) as Percent_Passed, 
+      
       case
       when avg(ap_cs_2013_states_clean.percent_passed) < ? then '03 Low'
       when avg(ap_cs_2013_states_clean.percent_passed) < ? then '02 Medium'
       else '01 High'
       end AS kpi
+
       FROM StateScoreCounts LEFT OUTER JOIN ap_cs_2013_states_clean
       ON StateScoreCounts.STATE = ap_cs_2013_states_clean.state
       GROUP BY StateScoreCounts.SCORE,ap_cs_2013_states_clean.state, StateScoreCounts.COUNT
@@ -102,9 +112,9 @@ avg(ap_cs_2013_states_clean.percent_passed) as Percent_Passed,
         data.world(propsfile = "www/.data.world"),
         dataset="achou/s-17-dv-final-project", type="sql",
         query="SELECT  ap_cs_2013_states_clean.state As State,
-        ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
-        ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
-        ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking
+        ROUND(ap_cs_2013_states_clean.percent_female_taking, 2) AS Female_Taking,
+        ROUND(ap_cs_2013_states_clean.percent_black_taking, 2) AS Black_Taking,
+        ROUND(ap_cs_2013_states_clean.percent_hispanic_taking, 2) AS percent_hispanic_taking
         From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
         on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
         WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000
@@ -116,13 +126,15 @@ avg(ap_cs_2013_states_clean.percent_passed) as Percent_Passed,
   tdf6 <- query(
     data.world(propsfile = "www/.data.world"),
     dataset="achou/s-17-dv-final-project", type="sql",
-    query="SELECT ap_cs_2013_states_clean.state AS State,
-                  ap_cs_2013_states_clean.percent_female_taking AS Female_Taking,
-                  ap_cs_2013_states_clean.percent_black_taking AS Black_Taking,
-                  ap_cs_2013_states_clean.percent_hispanic_taking AS percent_hispanic_taking
-          From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
-          on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
-          WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000"
+    query="
+    SELECT 
+    ap_cs_2013_states_clean.state AS State,
+    ROUND(ap_cs_2013_states_clean.percent_female_taking, 2) AS Female_Taking,
+    ROUND(ap_cs_2013_states_clean.percent_black_taking, 2) AS Black_Taking,
+    ROUND(ap_cs_2013_states_clean.percent_hispanic_taking, 2) AS percent_hispanic_taking
+    From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried` 
+    on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
+    WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000"
     ) %>% data.frame(.)
             
   df6 <- melt(tdf6)

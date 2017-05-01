@@ -56,7 +56,7 @@ dashboardPage(skin= "purple",
                 tabPanel("Data",  
                          tags$h3(tags$b("Income Inequality and Test Attempt Ratio for Black and Hispanic Test Takers")),
                          tags$h5("Click the button below to get Gini index and test attempt ratio for Blacks and Hispanics."),
-                         actionButton(inputId = "click3",  label = "Fetch"),
+                         actionButton(inputId = "click3",  label = "Fetch data"),
                          hr(),
                          DT::dataTableOutput("scatterData1")
                 ),
