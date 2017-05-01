@@ -25,7 +25,7 @@ dashboardPage(skin= "purple",
        tabItem(tabName = "boxplot",
                tabsetPanel(
                  tabPanel("Data",  
-                          tags$h3(tags$b("Test Taker per Teacher by Region")),
+                          tags$h3(tags$b("Test Takers per Teacher by Region")),
                           tags$h5("Click the button below to see the yield per teacher for different regions."),
                           actionButton(inputId = "click1",  label = "Fetch Data"),
                           hr(), 
@@ -54,7 +54,7 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "scatter",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Income Inequality and Test Attempt Ratio for Blacks and Hispanic Test Takers")),
+                         tags$h3(tags$b("Income Inequality and Test Attempt Ratio for Black and Hispanic Test Takers")),
                          tags$h5("Click the button below to get Gini index and test attempt ratio for Blacks and Hispanics."),
                          actionButton(inputId = "click3",  label = "Fetch"),
                          hr(),
@@ -95,7 +95,7 @@ dashboardPage(skin= "purple",
                          hr(),
                          DT::dataTableOutput("barchartData1")
                          ),
-                tabPanel("Barchart with Table Calculation", plotlyOutput("barchartPlot1", height=1500)
+                tabPanel("Barchart with Table Calculation", plotOutput("barchartPlot1", height=1500)
                          ),
                 #tabPanel("High Sales Customers", plotlyOutput("barchartPlot2", height=700)),
                 tabPanel("Details")

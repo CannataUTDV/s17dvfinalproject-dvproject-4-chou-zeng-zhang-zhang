@@ -16,7 +16,7 @@ require(acs)
 require(choroplethr)
 require(choroplethrAdmin1)
 require(choroplethrMaps)
-require (reshape2)
+require(reshape2)
 
 # This is a global dataframe for the histogram plot
 df_hist <- query(
@@ -42,7 +42,7 @@ shinyServer(function(input, output) {
     BoxPlot <- query(
       data.world(propsfile = "www/.data.world"),
       dataset="achou/s-17-dv-final-project", type="sql",
-      query="select state_table.census_region_name as Region, ap_cs_2013_states_clean.yield_per_teacher as Yield
+      query="select state_table.name as State, state_table.census_region_name as Region, ap_cs_2013_states_clean.yield_per_teacher as Yield
       from state_table left outer join ap_cs_2013_states_clean
       on state_table.name=ap_cs_2013_states_clean.state"
     )  %>% data.frame(.)
