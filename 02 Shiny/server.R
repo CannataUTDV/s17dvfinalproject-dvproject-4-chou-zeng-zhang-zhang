@@ -10,7 +10,6 @@ require(gridExtra)
 require(RColorBrewer)
 require(acs)
 require(choroplethr)
-require(choroplethrAdmin1)
 require(choroplethrMaps)
 require(reshape2)
 
