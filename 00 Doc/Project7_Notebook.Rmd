@@ -198,14 +198,21 @@ First create a barchart by selecting percent passed and states columns from AP C
 > This barchart displays the different passed rate for Female, Black and Hispanic in each of these 12 states. For all the high passed rate states, Female passed rates are very high, mostly over 75 percent. Nebraska has a 100 percent Female passed rate. Alabama has a relatively high Black AP CS passed rate. However, there are some high passed rate states do not have Black or Hispanic taking the exam or do not have collected data. 
 
 ### Maps
+![](../03 Visualizations/Map-Shiny.png)
+
+> **Insight for Figure 10: *Map of Income Inequality in the U.S.* **  
+Using the census data, we created a choropleth map displaying the Gini index in the US. This map was created using Ari Lamstein's Choroplethr and Ezra Haber Glenn's ACS packages. The classes are created using the Jenks natural breaks classification method.
+
+> The Gini index is a normalized measure of income inequality. We observed that many coastal states have generally higher index values than landlocked states, which compelled us to examine the AP CS score distributions between coastal and landlocked states, as seen in the histogram tab.
+
 ![](../03 Visualizations/Map-HispanicTaking.png)
 
-> **Insight for Figure 10: *Map of Taking Rate for Hispanic* **  
+> **Insight for Figure 11: *Map of Taking Rate for Hispanic* **  
 This map shows the Hispanic taking rate in each states. Percent Hispanic taking is the number of Hispanic exam takers as a percentage of total number of takers in this state. Colored and Labeled with the percent Hispanic taking. Darker Blue means a higher Hispanic taking rate, lighter color means low Hispanic taking percentage. South region has a relatively high Hispanic taking rate. 
 
 ![](../03 Visualizations/Map-BlackTaking.png)
 
-> **Insight for Figure 11: *Map of Taking Rate for Blacks* **  
+> **Insight for Figure 12: *Map of Taking Rate for Blacks* **  
 This map shows the Black taking rate in each states. Percent Black taking is the number of Black exam takers as a percentage of total number of takers in this state. Colored and Labeled with the percent black taking. Darker orange means a higher Black taking rate, lighter color means low Black taking percentage. Southeast region has a relatively high Black taking rate. 
 
 ## Shiny App
