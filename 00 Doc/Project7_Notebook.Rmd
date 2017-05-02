@@ -217,7 +217,7 @@ This map shows the Black taking rate in each states. Percent Black taking is the
 
 ## Shiny App
 To view our Shiny web app we made for the project, please click the image below. 
-[![Shiny](../03 Visualizations/shiny.png)](https://ronzhang.shinyapps.io/project6/)
+[![Shiny](../03 Visualizations/shiny.png)](https://andrewchou.shinyapps.io/finalproject/)
 
 
 
