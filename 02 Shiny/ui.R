@@ -90,7 +90,7 @@ dashboardPage(skin= "purple",
               tabsetPanel(
                 tabPanel("Data",
                          tags$h3(tags$b("KPI: Passed Rate")),
-                         tags$h5("Adjust the intervals for the per capita income using the sliders:"),
+                         tags$h5("Adjust the intervals for the passing rate using the sliders:"),
                          sliderInput("KPI1", "Low:", min = 0, max = 60,  value = 60),
                          sliderInput("KPI2", "Medium:", min = 60, max = 75,  value = 75),
                          actionButton(inputId = "click4",  label = "Fetch data"),
@@ -100,11 +100,10 @@ dashboardPage(skin= "purple",
                 tabPanel("Crosstab Plot", plotOutput("crosstabPlot1", height = 1000)),
                 tabPanel("Details", 
                          tags$h3(tags$b("About this visualization:")),
-                         tags$p("This visualization examines the relationship between the number of years that companies were on the", tags$span(tags$a(href="https://www.inc.com/inc5000/list/2016/", target="_blank", "Inc. 5000 list of fastest growing companies in America")), "and the percent growth they experienced in the past 3 years. The numbers in each cell represent the percent growth for the companies in 2016. The KPI is the level of growth, defined as low (0-10%), medium (11%-50%), and high (51%+)."
-                         ),
-                         tags$br(),
-                         tags$p("We looked at how these metrics varied from state to state, and we can see that, in general, younger companies have had much larger growth than those who have been on the list in recent years. This is most likely due to these companies being smaller and having less net worth, thus amplifying the magnitude of any increase in growth.")
-                         ))),
+                         tags$p("The counts for each score within each state is displayed in the crosstab visualization. Each cell")
+                         )
+                )
+              ),
 
       # Barchart
       tabItem(tabName = "barchart",
@@ -147,7 +146,17 @@ dashboardPage(skin= "purple",
                 tabPanel("Visualization", plotOutput("choroMap1", height = 600)),
                 tabPanel("Details",
                          tags$h3(tags$b("About this visualization:")),
-                         tags$p("Using the census data, we created a choropleth map displaying the Gini index in the US.")
+                         tags$p("Using the census data, we created a choropleth map displaying the Gini index in the US. This map was created using Ari Lamstein's Choroplethr and Ezra Haber Glenn's ACS packages. The classes are created using the", 
+                                tags$span(tags$a(href="https://en.wikipedia.org/wiki/Jenks_natural_breaks_optimization", 
+                                                 target="_blank", 
+                                                 "Jenks natural breaks classification method"
+                                                 )
+                                          ),
+                                "."
+                                ),
+                         tags$br(),
+                         tags$p("The Gini index is a normalized measure of income inequality. We observed that many coastal states have generally higher index values than landlocked states, which compelled us to examine the AP CS score distributions between coastal and landlocked states, as seen in the histogram tab."
+                                )
                          )
               )
       )
