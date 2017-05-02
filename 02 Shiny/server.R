@@ -244,7 +244,7 @@ shinyServer(function(input, output) {
     theme(panel.background = element_rect(fill="gray10"),
           panel.grid.major = element_line(colour="gray25"))
   })
-  
+    
   #----------------Crosstab-------------
   output$crosstabPlot1 <- renderPlot({
     ggplot(df4()) + 

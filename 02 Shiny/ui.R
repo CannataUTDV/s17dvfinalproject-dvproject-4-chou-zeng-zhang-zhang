@@ -58,8 +58,10 @@ dashboardPage(skin= "purple",
                                 tags$span(tags$a(href="https://en.wikipedia.org/wiki/Coastal_states", target = "_blank", "geographically coastal")), 
                                 "and those that are", 
                                 tags$span(tags$a(href="https://en.wikipedia.org/wiki/List_of_landlocked_U.S._states", target = "_blank", "geographically landlocked.")),
-                                "We noticed that the distributions are almost identical, suggesting that the geography of test takers has little to do with the AP score outcomes. Also, both distributions are bimodal and almost symmetric."
-                                )
+                                "We noticed that the distributions are almost identical, suggesting that the geography of test takers has little to do with the AP score outcomes. Also, both distributions are bimodal and almost symmetric, providing insight on the polarity of scores for the AP CS test."
+                                ),
+                         tags$br(),
+                         tags$p("Lastly, we can see that there were far more AP scores for coastal states than there were for landlocked states. Although the bulk of this is most likely attributed to greater population size and density in coastal states, it may be worth looking into resources that coastal states have to facilitate more test takers.")
                          )
                 )
               ),
