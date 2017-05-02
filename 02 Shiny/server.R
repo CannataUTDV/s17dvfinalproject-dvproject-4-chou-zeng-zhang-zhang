@@ -254,7 +254,7 @@ shinyServer(function(input, output) {
     geom_text(aes(x=Score, y=State, label=Count), size=4) +
     geom_tile(aes(x=Score, y=State, fill=kpi), alpha=0.50, color = "gray") + 
     scale_x_continuous(breaks=seq(1, 13, 1)) +
-    labs(fill = "Passed Rate", x = "Score")
+    labs(fill = "Pass Rate", x = "Score")
   })
   
   #----------------Barchart---------------

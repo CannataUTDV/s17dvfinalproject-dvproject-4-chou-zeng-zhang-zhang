@@ -89,10 +89,10 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "crosstab",
               tabsetPanel(
                 tabPanel("Data",
-                         tags$h3(tags$b("KPI: Passed Rate")),
-                         tags$h5("Adjust the intervals for the passing rate using the sliders:"),
+                         tags$h3(tags$b("KPI: Pass Rate")),
+                         tags$h5("Adjust the intervals for the pass rate using the sliders:"),
                          sliderInput("KPI1", "Low:", min = 0, max = 60,  value = 60),
-                         sliderInput("KPI2", "Medium:", min = 60, max = 75,  value = 75),
+                         sliderInput("KPI2", "Medium:", min = 60, max = 80,  value = 80),
                          actionButton(inputId = "click4",  label = "Fetch data"),
                          hr(),
                          DT::dataTableOutput("crosstabData1")
@@ -100,7 +100,7 @@ dashboardPage(skin= "purple",
                 tabPanel("Crosstab Plot", plotOutput("crosstabPlot1", height = 1000)),
                 tabPanel("Details", 
                          tags$h3(tags$b("About this visualization:")),
-                         tags$p("The counts for each score within each state is displayed in the crosstab visualization. Each cell")
+                         tags$p("The counts for each score within each state is displayed in the crosstab visualization. Each cell contains the counts, and each row is colored by the passing rate for the respective state. States that did not have enough scores were given a pass rate value of NA to avoid the creation of misleading data.")
                          )
                 )
               ),
