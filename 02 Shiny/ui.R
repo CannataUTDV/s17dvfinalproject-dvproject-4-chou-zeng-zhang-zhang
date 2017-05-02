@@ -117,7 +117,21 @@ dashboardPage(skin= "purple",
                          DT::dataTableOutput("barchartData1")
                          ),
                 tabPanel("Barchart with Table Calculation", plotOutput("barchartPlot1", height = 1200)),
-                tabPanel("Details")
+                tabPanel("Details",
+                         tags$h3(tags$b("About this visualization:")),
+                         tags$p("This barchart displays the percentage of total test takers from each minority group in each state, for states with a median household income greater than $60,000. We noticed that Maryland had the largest proportion of hispanic test takers. We also see that Washington and California had relatively higher proportions of females taking the test, with percentages of 25.32% and 21.64% respectively. Lastly, Alaska and Utah had no blacks or hispanics that took the test, but this is most likely due to the fact that they have relatively low percentages of black and hispanic residents to begin with (see", 
+                                tags$span(tags$a(href="https://www.census.gov/quickfacts/table/PST045216/02",
+                                                 target="_blank", 
+                                                 "Alaska's demographics"
+                                                 )
+                                          ),
+                                "and",
+                                tags$span(tags$a(href="https://www.census.gov/quickfacts/table/PST045216/49", target="_blank", "Utah's demographics"
+                                                 )
+                                          ),
+                                ")."
+                                )
+                         )
                 )
               ),
 
@@ -131,7 +145,10 @@ dashboardPage(skin= "purple",
                          hr(),
                          DT::dataTableOutput("choroData1")),
                 tabPanel("Visualization", plotOutput("choroMap1", height = 600)),
-                tabPanel("Details")
+                tabPanel("Details",
+                         tags$h3(tags$b("About this visualization:")),
+                         tags$p("Using the census data, we created a choropleth map displaying the Gini index in the US.")
+                         )
               )
       )
       
