@@ -65,8 +65,9 @@ shinyServer(function(input, output) {
       dataset="achou/s-17-dv-final-project", type="sql",
       query="
       SELECT AreaName AS State, gini_index, 
-      ROUND(ap_cs_2013_states_clean.attempt_rate_black, 2) AS attempt_rate_black,
-      ROUND(ap_cs_2013_states_clean.attempt_rate_hispanic, 2) AS attempt_rate_hispanic
+      ROUND(ap_cs_2013_states_clean.attempt_rate_black, 2) AS ttpc_black,
+      ROUND(ap_cs_2013_states_clean.attempt_rate_hispanic, 2) AS ttpc_hispanic,
+      ((100 - (ap_cs_2013_states_clean.percent_black_taking + ap_cs_2013_states_clean.percent_hispanic_taking)) / (100 - (percent_black_state + percent_hispanic_state))) * 100 as ttpc_other
       FROM `acs-2015-5-e-income-queried.csv/acs-2015-5-e-income-queried`
       LEFT JOIN `ap_cs_2013_states_clean.csv/ap_cs_2013_states_clean`
       WHERE `acs-2015-5-e-income-queried`.AreaName = `ap_cs_2013_states_clean`.state
@@ -233,12 +234,14 @@ shinyServer(function(input, output) {
   #----------------Scatter Plot------------
   output$scatterPlot1 <- renderPlot({
     ggplot(df3()) +
-    geom_point(aes(x = gini_index, y = attempt_rate_black, colour="Black"))+
-    geom_smooth(aes(x = gini_index, y = attempt_rate_black, colour = "Black"), method = "loess", se = F) +
-    geom_point(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"))+
-    geom_smooth(aes(x = gini_index, y = attempt_rate_hispanic, colour="Hispanic"), method = "loess", se = F) +
+    geom_point(aes(x = gini_index, y = ttpc_black, colour="Black"))+
+    geom_smooth(aes(x = gini_index, y = ttpc_black, colour = "Black"), method = "loess", se = F) +
+    geom_point(aes(x = gini_index, y = ttpc_hispanic, colour="Hispanic"))+
+    geom_smooth(aes(x = gini_index, y = ttpc_hispanic, colour="Hispanic"), method = "loess", se = F) +
+    geom_point(aes(x = gini_index, y = ttpc_other, colour="Other"))+
+    geom_smooth(aes(x = gini_index, y = ttpc_other, colour="Other"), method = "loess", se = F) +
     labs(title="Influence of Income Inequality on Black and Hispanic Test Taker per Capita", x = "Gini Index", y="Test Takers per Capita", colour="Group") +
-    scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise")) +
+    scale_colour_manual(values = c(Black = "orange", Hispanic = "turquoise", Other = "hotpink2")) +
     theme_classic() +
     theme(panel.background = element_rect(fill="gray10"),
           panel.grid.major = element_line(colour="gray25"))
