@@ -3,9 +3,9 @@ title: finalproject
 account: andrewchou
 server: shinyapps.io
 appId: 177344
-bundleId: 812628
+bundleId: 813340
 url: https://andrewchou.shinyapps.io/finalproject/
-when: 1493765108.66117
+when: 1493818702.37116
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: www/.data.world.txt|www/SuperStoreOrders.csv

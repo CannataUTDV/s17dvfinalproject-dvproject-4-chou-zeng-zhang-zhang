@@ -70,7 +70,7 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "scatter",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Income Inequality and Test Attempt Rate for Black and Hispanic Test Takers")),
+                         tags$h3(tags$b("Income Inequality and Test Takers per Capita for Blacks and Hispanics")),
                          tags$h5("Click the button below to get Gini index and test attempt ratio for Blacks and Hispanics."),
                          actionButton(inputId = "click3",  label = "Fetch data"),
                          hr(),
@@ -79,9 +79,9 @@ dashboardPage(skin= "purple",
                 tabPanel("Visualization", plotOutput("scatterPlot1", height = 600)),
                 tabPanel("Details",
                          tags$h3(tags$b("About this visualization:")),
-                         tags$p("We wanted to explore whether or not income inequality had an effect on the test attempt rate for Blacks and Hispanics in each state. We used the Gini index from the ACS census data in 2015 as the standard measure of income inequality for each state. The test attempt rate is the calculated as follows:",
+                         tags$p("We wanted to explore whether or not income inequality had an effect on the test attempt rate for Blacks and Hispanics in each state. We used the Gini index from the ACS census data in 2015 as the standard measure of income inequality for each state. We calculated a field of test takers per capita for each minority group within each state in order to reflect the test attempt rates for minority groups. This is calculated as follows:",
                                 withMathJax(helpText("$$\\frac{\\% \\ minority \\ group \\ out \\ of \\ test \\ takers \\ in \\ state} {\\% \\ minority \\ group \\ out \\ of \\ state \\ population} \\cdot 100$$")),
-                                tags$p("At first glance, there seemed to be an exponential relationship between the Gini index and the test attempt rate for both groups. However, after adding fit lines (using Loess regression), we see that this initial reaction is not supported by the regression. The Gini index does not seem to have any significant effect on the attempt rates. Most of the attempt rates were less than 100, but there are some extreme values at various Gini index values for both minority groups.")
+                                tags$p("At first glance, there seemed to be an exponential relationship between the Gini index and the test attempt rate for both groups. However, after adding fit lines (using Loess regression), we see that this initial reaction is not supported by the regression. The Gini index does not seem to have any significant relationship with the test takers per capita metric. Most of the states had less than 100 test takers per capita, but there are some extreme values at various Gini index values for both minority groups.")
                                 )
                          )
               )
