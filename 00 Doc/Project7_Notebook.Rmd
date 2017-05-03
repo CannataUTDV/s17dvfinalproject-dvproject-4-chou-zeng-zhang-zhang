@@ -23,7 +23,7 @@ sessionInfo(package=NULL)
 
 ##  Our Datasets
 > The first [dataset](http://home.cc.gatech.edu/ice-gt/556) 
-> was created by students at Georgia Tech University. It focuses on the demographics of test-takers for the AP CS test administered by the Collegeboard in 2013. 
+> was created by students at Georgia Tech University. It focuses on the demographics of test-takers for the AP CS test administered by the Collegeboard in 2013. The lowest score for an AP test is a 1, while the highest score is a 5.
 > The second dataset that we used to join the AP dataset contains census data related to income in the U.S in 2015.
 > Download AP dataset [here](http://home.cc.gatech.edu/ice-gt/uploads/556/DetailedStateInfoAP-CS-A-2006-2013-with-PercentBlackAndHIspanicByState-fixed.xlsx).
 > Download the 2015 US Census Income data [US Census population estimates, Income (American Community Survey, 2011-2015)](https://data.world/uscensusbureau/acs-2015-5-e-income)
@@ -78,6 +78,7 @@ source("../01 Data/original_data.R")
        i. Build an ETL script to pull the data from data.world and proceed the cleaning process 
 ```{r, eval=FALSE}
 ### Load Required Packages
+require(readxl)
 # Set the working directory to access CSVs
 setwd("~/s17dvfinalproject-dvproject-4-chou-zeng-zhang-zhang/01 Data")
 
@@ -126,8 +127,8 @@ write.csv(df, file = "ap_cs_2013_states_clean.csv", row.names=FALSE, na="")
    >2. In order to join the AP CS 2013 dataset to the 2015 Income Census data, we ran a query on data.world in order to rename the columns for simplicity, and we downloaded it as "acs-2015-5-e-income-queried.csv".
    >3. Use Tableau's web data connector to import the datasets. Join the two datasets together by State to merge the datasets in order for us to explore the relationship between two datasets.
    >4. We had to set the "S17 DV Project 6" data.world datasets PUBLIC in order to access and work on it in RStudio when we wrote the server code.
-   >5. Write SQL and R SDK in order to create the same Barcharts with ggplot. 
-   >6. Create the Shiny App which includes all the three visualizations, and publish it onto the Shiny server.
+   >5. Use SQL and R SDK in order to create the similar and other visualizations with ggplot. 
+   >6. Create the Shiny App which includes all of the different types of visualizations, and publish it onto the Shiny server.
 
 ### Cleaned Dataset
 > This is the AP CS Test dataset after the cleaning process:
@@ -216,7 +217,7 @@ This map shows the Hispanic taking rate in each states. Percent Hispanic taking 
 This map shows the Black taking rate in each states. Percent Black taking is the number of Black exam takers as a percentage of total number of takers in this state. Colored and Labeled with the percent black taking. Darker orange means a higher Black taking rate, lighter color means low Black taking percentage. Southeast region has a relatively high Black taking rate. 
 
 ## Shiny App
-To view our Shiny web app we made for the project, please click the image below. 
+To view our Shiny web app we made for the project, please click the image below. It contains other interesting visualizations that are not shown in this notebook.
 [![Shiny](../03 Visualizations/shiny.png)](https://andrewchou.shinyapps.io/finalproject/)
 
 
