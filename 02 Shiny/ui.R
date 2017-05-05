@@ -111,7 +111,7 @@ dashboardPage(skin= "purple",
       tabItem(tabName = "barchart",
               tabsetPanel(
                 tabPanel("Data",  
-                         tags$h3(tags$b("Different Taking Rates by High Income States")),
+                         tags$h3(tags$b("Passed Rate by Gender by High Income States")),
                          tags$h5("Click the button below to see the percentage of minorities taking the test for each state."),
                          actionButton(inputId = "click5",  label = "Fetch data"),
                          hr(),

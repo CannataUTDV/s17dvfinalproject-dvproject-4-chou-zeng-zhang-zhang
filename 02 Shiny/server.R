@@ -106,13 +106,12 @@ shinyServer(function(input, output) {
     tdf5 = query(
         data.world(propsfile = "www/.data.world"),
         dataset="achou/s-17-dv-final-project", type="sql",
-        query="SELECT  ap_cs_2013_states_clean.state As State,
-        ROUND(ap_cs_2013_states_clean.percent_female_taking, 2) AS Female_Taking,
-        ROUND(ap_cs_2013_states_clean.percent_black_taking, 2) AS Black_Taking,
-        ROUND(ap_cs_2013_states_clean.percent_hispanic_taking, 2) AS percent_hispanic_taking
-        From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried`
-        on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
-        WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000
+        query="SELECT ap_cs_2013_states_clean.state AS State, 
+        ap_cs_2013_states_clean.percent_female_passed AS Female_Passed,
+        ap_cs_2013_states_clean.percent_male_passed AS Male_Passed
+        FROM ap_cs_2013_states_clean INNER JOIN `acs-2015-5-e-income-queried`
+        ON ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
+        WHERE `acs-2015-5-e-income-queried`.median_household_income >= 60000
         "
       ) %>% data.frame(.)
     
@@ -122,19 +121,18 @@ shinyServer(function(input, output) {
     data.world(propsfile = "www/.data.world"),
     dataset="achou/s-17-dv-final-project", type="sql",
     query="
-    SELECT 
-    ap_cs_2013_states_clean.state AS State,
-    ROUND(ap_cs_2013_states_clean.percent_female_taking, 2) AS Female_Taking,
-    ROUND(ap_cs_2013_states_clean.percent_black_taking, 2) AS Black_Taking,
-    ROUND(ap_cs_2013_states_clean.percent_hispanic_taking, 2) AS percent_hispanic_taking
-    From ap_cs_2013_states_clean left outer join `acs-2015-5-e-income-queried` 
-    on ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
-    WHERE `acs-2015-5-e-income-queried`.median_household_income > 60000
+    SELECT ap_cs_2013_states_clean.state AS State, 
+    ap_cs_2013_states_clean.percent_female_passed AS Female_Passed,
+    ap_cs_2013_states_clean.percent_male_passed AS Male_Passed
+    FROM ap_cs_2013_states_clean INNER JOIN `acs-2015-5-e-income-queried`
+    ON ap_cs_2013_states_clean.state = `acs-2015-5-e-income-queried`.AreaName
+    WHERE `acs-2015-5-e-income-queried`.median_household_income >= 60000
     "
     ) %>% data.frame(.)
-            
-  df6 <- melt(tdf6)
   
+  tdf6.1<- melt(tdf6)
+
+  df6 <- tdf6.1 %>% dplyr::mutate(avg_percent_passed= 65.63) %>% data.frame(.)
 
   # Create dataframe for Choropleth Map
   df7 <- eventReactive(input$click6,{
@@ -261,13 +259,16 @@ shinyServer(function(input, output) {
   
   #----------------Barchart---------------
   output$barchartPlot1 <- renderPlot({
-    ggplot(df6, aes(State, value, fill = factor(variable, labels=c("Female", "Black", "Hispanic")))) +
+    ggplot(df6, aes(State, value, fill = factor(variable, labels=c("Female", "Male")))) +
     theme(axis.text.x=element_text(angle=0, size=12, vjust=0.5)) +
     theme(axis.text.y=element_text(size=12, hjust=0.5)) +
     geom_bar(stat= 'identity', position = 'dodge') +
     coord_flip() +
-    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value)), position = position_dodge(width = 1), colour="black", hjust=-.5)+
-    labs(fill = "Group", y = "Percent of Total Test Takers in State")
+    geom_hline(aes(yintercept = avg_percent_passed), color="red")+ 
+    geom_text(mapping=aes(State, value, label= sprintf("%2.2f",value)),size=4, position = position_dodge(width = 0.5), colour="blue", hjust=-.2) +
+    geom_text(mapping=aes(State, value,label= sprintf("%2.2f",value-avg_percent_passed)),size=4, position = position_dodge(width = 0.5), colour="black", hjust=-1.8)+
+    geom_text(aes( -1, avg_percent_passed, label = avg_percent_passed, vjust = -.5, hjust = -.25),size =6, color="red")+
+    labs(fill = "Gender", y = "Percent of Passed Takers in State")
     })
   
   #----------------Choropleth Map---------------
