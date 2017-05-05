@@ -274,8 +274,7 @@ shinyServer(function(input, output) {
     df_choroMap$region <- tolower(df_choroMap$region)
     state_choropleth(df_choroMap, 
                      title="Income Inequality in the U.S.", 
-                     legend="Gini Index", 
-                     buckets = 5
+                     legend="Gini Index"
                      )
     })
 
