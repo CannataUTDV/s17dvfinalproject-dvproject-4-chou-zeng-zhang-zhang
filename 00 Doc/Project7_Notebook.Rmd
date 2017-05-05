@@ -23,7 +23,7 @@ sessionInfo(package=NULL)
 
 ##  Our Datasets
 > The first [dataset](http://home.cc.gatech.edu/ice-gt/556) 
-> was created by students at Georgia Tech University. It focuses on the demographics of test-takers for the AP CS test administered by the Collegeboard in 2013. 
+> was created by students at Georgia Tech University. It focuses on the demographics of test-takers for the AP CS test administered by the Collegeboard in 2013. The lowest score for an AP test is a 1, while the highest score is a 5.
 > The second dataset that we used to join the AP dataset contains census data related to income in the U.S in 2015.
 > Download AP dataset [here](http://home.cc.gatech.edu/ice-gt/uploads/556/DetailedStateInfoAP-CS-A-2006-2013-with-PercentBlackAndHIspanicByState-fixed.xlsx).
 > Download the 2015 US Census Income data [US Census population estimates, Income (American Community Survey, 2011-2015)](https://data.world/uscensusbureau/acs-2015-5-e-income)
@@ -78,6 +78,7 @@ source("../01 Data/original_data.R")
        i. Build an ETL script to pull the data from data.world and proceed the cleaning process 
 ```{r, eval=FALSE}
 ### Load Required Packages
+require(readxl)
 # Set the working directory to access CSVs
 setwd("~/s17dvfinalproject-dvproject-4-chou-zeng-zhang-zhang/01 Data")
 
@@ -126,8 +127,8 @@ write.csv(df, file = "ap_cs_2013_states_clean.csv", row.names=FALSE, na="")
    >2. In order to join the AP CS 2013 dataset to the 2015 Income Census data, we ran a query on data.world in order to rename the columns for simplicity, and we downloaded it as "acs-2015-5-e-income-queried.csv".
    >3. Use Tableau's web data connector to import the datasets. Join the two datasets together by State to merge the datasets in order for us to explore the relationship between two datasets.
    >4. We had to set the "S17 DV Project 6" data.world datasets PUBLIC in order to access and work on it in RStudio when we wrote the server code.
-   >5. Write SQL and R SDK in order to create the same Barcharts with ggplot. 
-   >6. Create the Shiny App which includes all the three visualizations, and publish it onto the Shiny server.
+   >5. Use SQL and R SDK in order to create the similar and other visualizations with ggplot. 
+   >6. Create the Shiny App which includes all of the different types of visualizations, and publish it onto the Shiny server.
 
 ### Cleaned Dataset
 > This is the AP CS Test dataset after the cleaning process:
@@ -141,52 +142,83 @@ source("../01 Data/etl_final_project.R")
 Visualizations were created using both Tableau and R Shiny. 
 
 ###  Box Plots
-<!-- ![](../03 Visualizations/vis1.png) -->
+![](../03 Visualizations/BoxplotYield.png)
 
-> **Insight for Figure 1: *Average growth rate in states for different industry* **  
-This barchart displays the average growth rate in selected states for selected industry. The states selected are the top 5 states which has the highest sum revenue during 2015. The industry set used as filter includes the 6 industries which has the highest sum revenue in 2015. The horizontal bars represent the average growth rates for the specific industry in individual states. The window reference line is the average of the average growth rate for the industry in selectedstates.
+> **Insight for Figure 1: *Yield Per Teacher by Region* **  
+These boxplots compare the distributions of test takers per teacher between each region. The distributions are not drastically different overall. Their spreads are rather similar, and it seems that the median ratio hovers around 10 test takers per teacher.
 
-> From the barchart we see that in Business product and services industry, state Georgia is growing fast, because its average growth rate is extremely higher than other states??. In Construction industry, California is playing the leading role. And in Human Resources industry, Florida shows the fastest growth. However, for Health industry, there is no obvious leading state; all states developed it well during year2015. 
+> It seems as though the Northeast has a lower test taker to teacher ratio than the other regions. The South certainly has the most variation in its distribution, as well as possessing the highest median test taker to teacher ratio. All but one distribution contain no outliers. The West region contains two, with each being at opposite extremes of the test taker per teacher metric.
 
+> This boxplot displays the distribution of yield per teacher in each region.
+For West region, the points are relatively concentrated however there is an outlier(California).  
 
+### Histogram
+![](../03 Visualizations/Histogram.png)
 
-### Histograms
-<!-- ![](../03 Visualizations/vis2.png) -->
-
-> **Insight for Figure 2: *High revenue ID set on Growth* **  
-We create a ID Set using company id and its revenue. We select companies whose revenue greater than 10 billion as high revenue companies, and there are 19 of them. The bar chart displays the growth rate for these 19 companies. 
-
-> Among these 19 companies with highest revenue, only two companies?? growth rate exceeds the average growth rate across the total 5000 companies.
+> **Insight for Figure 2: *Score Distributions for Coastal and Landlocked States* **  
+We wanted to see if there was a significant difference in the distributions in the AP score counts between US states that are geographically coastal and those that are geographically landlocked. We noticed that the distributions are almost identical, suggesting that the geography of test takers has little to do with the AP score outcomes. Also, both distributions are bimodal and almost symmetric.
 
 
 ### Scatter Plots
-<!-- ![](../03 Visualizations/vis3.png) -->
 
-> **Insight for Figure 3: *Average revenue for 5 highest revenue state by yrs on list* **  
-We first create a set of the five states with the highest revenue. For all the companies in these five states, we group them by years on the list. The bar chart shows the average revenue each group. We also calculate the difference between each bar and the average for the pane.
+![](../03 Visualizations/ScatterFemalePassRateWest.png)
 
-> In Texas, the longer companies stay on the list, the companies tend to have higher revenue. However, the extremes appear at the 9th year in Georgia and at 7th years in New York.
+![](../03 Visualizations/ScatterFemalePassRateSouth.png)
+![](../03 Visualizations/ScatterFemalePassRateNortheast.png)
+![](../03 Visualizations/ScatterFemalePassRateMidwest.png)
+
+> **Insight for Figure 3 - 6: *Female Pass Rate Related to Student Teacher Ratio by Region* **  
+This scatterplot demonstrates the relationship between the yield per teacher which means the number of students per teacher teaches and the female pass rate. We made scatterplot for each region, Midwest, Northeast, South and West. The line in each page is the trend line for the female pass rate in each region. 
+
+> In Midwest and Northeast, the female pass rates tend to decrease as the number of students each teacher has increases. For South region, the female pass rate is moderately related with the yield per teacher. However, in West region, with a higher yield per teacher, the female pass rate would be higher. 
+
 
 ### Cross Tabs
-<!-- ![](../03 Visualizations/vis4.png) -->
+![](../03 Visualizations/CrosstabAPScorebyStateColoredbyPassedRate.png)
 
-> **Insight for Figure 4: *Average revenue for 5 highest revenue state by yrs on list* **  
-We first create a set of the five states with the highest revenue. For all the companies in these five states, we group them by years on the list. The bar chart shows the average revenue each group. We also calculate the difference between each bar and the average for the pane.
+> **Insight for Figure 7: *AP Score by States Colored by Passed rate level* **  
+This crosstab shows the number of people in each score category for individual states colored by KPI passed rate level. Passed rate between 0 and 60 percent is considered as low passed rate. Rate between 60 and 75 percent is set to be medium pass rate. Passed rate that is higher than 75 percent is considered high.California and Texas are the two states with largest number of AP CS exam takers and score 5 people.  
 
-> In Texas, the longer companies stay on the list, the companies tend to have higher revenue. However, the extremes appear at the 9th year in Georgia and at 7th years in New York.
+> AP Score by States Colored by Passed rate level Filtered by High per capita income states
+We first select per capita income and states columns to make a bar-chart, pick 9 states with the highest per capita income  and create a high per capita income states set. 
+The crosstab shows the number of people in each score category for each of the 9 states. The KPI is created using passed rate level parameter. With a relatively high per capita income, these states all have a medium to high passed rate on AP CS exam. 
 
 ### Barcharts
-<!-- ![](../03 Visualizations/vis5.png) -->
+![](../03 Visualizations/BarchartDifferentTakingRatesbyHighIncomeStates.png)
 
-> **Insight for Figure 5: *Average revenue for 5 highest revenue state by yrs on list* **  
-We first create a set of the five states with the highest revenue. For all the companies in these five states, we group them by years on the list. The bar chart shows the average revenue each group. We also calculate the difference between each bar and the average for the pane.
+> **Insight for Figure 8: *Taking rate for Female, Black and Hispanic in high income states.* **  
+First create a barcharts by selecting median household income and Area name(state) columns from the income census data. Select the 12 highest median household income states and create a high income states sets.
 
-> In Texas, the longer companies stay on the list, the companies tend to have higher revenue. However, the extremes appear at the 9th year in Georgia and at 7th years in New York.
+> This barcharts shows the taking rate for Female, Black and Hispanic in each of these 12 states. The taking rate is the number of exam takers in different category as a percentage of total takers in that state. Washington has the highest Female taking rate, 25.32 percent of total number of takers in Washington. Other high income states mostly has a Female taking rate between 10% and 20%. 
 
+![](../03 Visualizations/BarchartDifferentPassedRatebyHighPassedRateStates.png)
+
+> **Insight for Figure 9: *Passed rate for Female, Black and Hispanic in high passed rate states* **  
+First create a barchart by selecting percent passed and states columns from AP CS states data. Create a high passed rate states sets by picking the 12 highest percent passed states. 
+
+> This barchart displays the different passed rate for Female, Black and Hispanic in each of these 12 states. For all the high passed rate states, Female passed rates are very high, mostly over 75 percent. Nebraska has a 100 percent Female passed rate. Alabama has a relatively high Black AP CS passed rate. However, there are some high passed rate states do not have Black or Hispanic taking the exam or do not have collected data. 
+
+### Maps
+![](../03 Visualizations/Map-Shiny.png)
+
+> **Insight for Figure 10: *Map of Income Inequality in the U.S.* **  
+Using the census data, we created a choropleth map displaying the Gini index in the US. This map was created using Ari Lamstein's Choroplethr and Ezra Haber Glenn's ACS packages. The classes are created using the Jenks natural breaks classification method.
+
+> The Gini index is a normalized measure of income inequality. We observed that many coastal states have generally higher index values than landlocked states, which compelled us to examine the AP CS score distributions between coastal and landlocked states, as seen in the histogram tab.
+
+![](../03 Visualizations/Map-HispanicTaking.png)
+
+> **Insight for Figure 11: *Map of Taking Rate for Hispanic* **  
+This map shows the Hispanic taking rate in each states. Percent Hispanic taking is the number of Hispanic exam takers as a percentage of total number of takers in this state. Colored and Labeled with the percent Hispanic taking. Darker Blue means a higher Hispanic taking rate, lighter color means low Hispanic taking percentage. South region has a relatively high Hispanic taking rate. 
+
+![](../03 Visualizations/Map-BlackTaking.png)
+
+> **Insight for Figure 12: *Map of Taking Rate for Blacks* **  
+This map shows the Black taking rate in each states. Percent Black taking is the number of Black exam takers as a percentage of total number of takers in this state. Colored and Labeled with the percent black taking. Darker orange means a higher Black taking rate, lighter color means low Black taking percentage. Southeast region has a relatively high Black taking rate. 
 
 ## Shiny App
-To view our Shiny web app we made for the project, please click the image below. 
-[![Shiny](../03 Visualizations/shiny.png)](https://ronzhang.shinyapps.io/project6/)
+To view our Shiny web app we made for the project, please click the image below. It contains other interesting visualizations that are not shown in this notebook.
+[![Shiny](../03 Visualizations/shiny.png)](https://andrewchou.shinyapps.io/finalproject/)
 
 
 
