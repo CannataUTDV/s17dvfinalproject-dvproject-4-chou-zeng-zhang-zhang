@@ -161,16 +161,16 @@ We wanted to see if there was a significant difference in the distributions in t
 
 ### Scatter Plots
 
-![](../03 Visualizations/ScatterFemalePassRateWest.png)
+![](../03 Visualizations/passrateperteachermidwest.png)
 
-![](../03 Visualizations/ScatterFemalePassRateSouth.png)
-![](../03 Visualizations/ScatterFemalePassRateNortheast.png)
-![](../03 Visualizations/ScatterFemalePassRateMidwest.png)
+![](../03 Visualizations/passrateperteacherNortheast.png)
+![](../03 Visualizations/passrateperteachersouth.png)
+![](../03 Visualizations/passrateperteacherwest.png)
 
 > **Insight for Figure 3 - 6: *Female Pass Rate Related to Student Teacher Ratio by Region* **  
-This scatterplot demonstrates the relationship between the yield per teacher which means the number of students per teacher teaches and the female pass rate. We made scatterplot for each region, Midwest, Northeast, South and West. The line in each page is the trend line for the female pass rate in each region. 
+This scatterplot demonstrates the relationship between the Exam pass rate for both Female,Male and the number of exam takers per teacher. We made scatterplot for each region, Midwest, Northeast, South and West. The line in each page is the trend line for the rate in each region. 
 
-> In Midwest and Northeast, the female pass rates tend to decrease as the number of students each teacher has increases. For South region, the female pass rate is moderately related with the yield per teacher. However, in West region, with a higher yield per teacher, the female pass rate would be higher. 
+> In Midwest and Northeast, the pass rates tend to decrease as the number of students each teacher has increases. For South region, the female pass rate is tend to decrease however male pass rate tend to increase with number of students per teacher going up. Interestingly, in West region, with larger number of students per teacher, the pass rate for both female and male would be higher. 
 
 
 ### Cross Tabs
