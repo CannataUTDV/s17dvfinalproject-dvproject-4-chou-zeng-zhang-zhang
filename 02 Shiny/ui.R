@@ -120,19 +120,7 @@ dashboardPage(skin= "purple",
                 tabPanel("Barchart with Table Calculation", plotOutput("barchartPlot1", height = 1200)),
                 tabPanel("Details",
                          tags$h3(tags$b("About this visualization:")),
-                         tags$p("This barchart displays the different passed rates for male and female in each of these 12 states that have the highest median household income. In each of the 12 high income states, males generally outperform females. The reference line indicates the average passed rate for all 50 states. For these high income states except for Utah and Hawaii, male passed rate exceeds the overall average rate. However, Female passed rates are generally below the average.
-                                ###########################
-                                This barchart displays the percentage of total test takers from each minority group in each state, for states with a median household income greater than $60,000. We noticed that Maryland had the largest proportion of hispanic test takers. We also see that Washington and California had relatively higher proportions of females taking the test, with percentages of 25.32% and 21.64% respectively. Lastly, Alaska and Utah had no blacks or hispanics that took the test, but this is most likely due to the fact that they have relatively low percentages of black and hispanic residents to begin with (see", 
-                                tags$span(tags$a(href="https://www.census.gov/quickfacts/table/PST045216/02",
-                                                 target="_blank", 
-                                                 "Alaska's demographics"
-                                                 )
-                                          ),
-                                "and",
-                                tags$span(tags$a(href="https://www.census.gov/quickfacts/table/PST045216/49", target="_blank", "Utah's demographics"
-                                                 )
-                                          ),
-                                ")."
+                         tags$p("This barchart displays the different passed rates for male and female in each of these 12 states that have the highest median household income. In each of the 12 high income states, males generally outperform females. The reference line indicates the average passed rate for all 50 states. For these high income states except for Utah and Hawaii, male passed rate exceeds the overall average rate. However, Female passed rates are generally below the average."
                                 )
                          )
                 )
