@@ -142,7 +142,7 @@ source("../01 Data/etl_final_project.R")
 Visualizations were created using both Tableau and R Shiny. 
 
 ###  Box Plots
-![](../03 Visualizations/BoxplotYield.png)
+![](../03 Visualizations/BoxPlotTakersPerTeacher.png)
 
 > **Insight for Figure 1: *Yield Per Teacher by Region* **  
 These boxplots compare the distributions of test takers per teacher between each region. The distributions are not drastically different overall. Their spreads are rather similar, and it seems that the median ratio hovers around 10 test takers per teacher.
@@ -184,19 +184,19 @@ We first select per capita income and states columns to make a bar-chart, pick 9
 The crosstab shows the number of people in each score category for each of the 9 states. The KPI is created using passed rate level parameter. With a relatively high per capita income, these states all have a medium to high passed rate on AP CS exam. 
 
 ### Barcharts
-![](../03 Visualizations/BarchartDifferentTakingRatesbyHighIncomeStates.png)
+![](../03 Visualizations/BarcharDifferentTakingRatesbyHighIncomeStates.png)
 
-> **Insight for Figure 8: *Taking rate for Female, Black and Hispanic in high income states.* **  
+> **Insight for Figure 8: *Taking rate for Black, Hispanic and other in high income states.* **  
 First create a barcharts by selecting median household income and Area name(state) columns from the income census data. Select the 12 highest median household income states and create a high income states sets.
 
-> This barcharts shows the taking rate for Female, Black and Hispanic in each of these 12 states. The taking rate is the number of exam takers in different category as a percentage of total takers in that state. Washington has the highest Female taking rate, 25.32 percent of total number of takers in Washington. Other high income states mostly has a Female taking rate between 10% and 20%. 
+> This barchart displays the percentage of total test takers from Black, Hispanic and other race groups  in each state, for states with a median household income greater than $60,000.In each state, Blacks and Hispanics exam takers are way less than other race groups. We noticed that Maryland had the largest proportion of Black test takers. California, which is along the border with Mexico, has a relatively higher percentage of Hispanic test takers.Lastly, Alaska and Utah had no blacks or hispanics that took the test, but this is most likely due to the fact that they have relatively low percentages of black and hispanic residents 
 
-![](../03 Visualizations/BarchartDifferentPassedRatebyHighPassedRateStates.png)
+![](../03 Visualizations/BarchartPassedRatebyGender.png)
 
-> **Insight for Figure 9: *Passed rate for Female, Black and Hispanic in high passed rate states* **  
-First create a barchart by selecting percent passed and states columns from AP CS states data. Create a high passed rate states sets by picking the 12 highest percent passed states. 
+> **Insight for Figure 9: *Passed rate for Male and Female in high passed rate states* **  
+First create a barchart by selecting female and male percent passed and states columns from AP CS states data. Create a high household income states sets by setting the lower bound of high median household income as 60000. 
 
-> This barchart displays the different passed rate for Female, Black and Hispanic in each of these 12 states. For all the high passed rate states, Female passed rates are very high, mostly over 75 percent. Nebraska has a 100 percent Female passed rate. Alabama has a relatively high Black AP CS passed rate. However, there are some high passed rate states do not have Black or Hispanic taking the exam or do not have collected data. 
+> This barchart displays the different passed rates for male and female in each of these 12 states that have the highest median household income. In each of the 12 high income states, males generally outperform females. The reference line displays the average passed rate for all 50 states. For these high income states except for Utah and Hawaii, male passed rate exceeds the overall average rate. However, Female passed rates are generally below the average.
 
 ### Maps
 ![](../03 Visualizations/Map-Shiny.png)
@@ -219,7 +219,6 @@ This map shows the Black taking rate in each states. Percent Black taking is the
 ## Shiny App
 To view our Shiny web app we made for the project, please click the image below. It contains other interesting visualizations that are not shown in this notebook.
 [![Shiny](../03 Visualizations/shiny.png)](https://andrewchou.shinyapps.io/finalproject/)
-
 
 
 
